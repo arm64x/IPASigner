@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
 
-    @State private var ipaURL: String = ""
+    @State private var ipaPath: String = ""
     @State private var certURL: String = ""
     @State private var profileURL: String = ""
 
@@ -20,6 +20,8 @@ struct ContentView: View {
     
     @State private var ignorePluglnsfolder = false
     @State private var ignoreWatch = true
+    
+    @State private var showingAlert = false
 
     var window = NSScreen.main?.visibleFrame
     var body: some View {
@@ -35,16 +37,32 @@ struct ContentView: View {
                 
                 TextField(
                         "File path or URL accepted",
-                        text: $ipaURL
+                        text: $ipaPath
                     )
                 .frame(width: 500, height: 30, alignment: .center)
 
                 Button {
-                    
+                    let panel = NSOpenPanel()
+                    panel.canChooseFiles = true
+                    panel.canChooseDirectories = false
+                    panel.allowsMultipleSelection = false
+                    panel.begin { result in
+                        if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+                            for url in panel.urls {
+                                print("选择的ipa：\(url.absoluteString)")
+                                if url.pathExtension.lowercased() == "ipa" || url.pathExtension.lowercased() == "app" {
+                                    self.ipaPath = url.path
+                                } else {
+                                    self.showingAlert = true
+                                }
+                            }
+                        }
+                    }
                 } label: {
                     Text("导入")
                 }
                 .frame(width: 80, height: 30, alignment: .center)
+                
 
             }.padding(.top, 20)
             
@@ -64,7 +82,8 @@ struct ContentView: View {
 
                 
                 Button {
-                    
+                    self.showingAlert = true
+
                 } label: {
                     Text("导入")
                 }
@@ -170,6 +189,11 @@ struct ContentView: View {
 
         }
         .frame(width:750, height: 400, alignment: .top)
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text("Order Complete"),
+                              message: Text("Thank you for shopping with us."),
+                              dismissButton: .default(Text("OK")))
+        }
     }
     
     func validate(name: String) {

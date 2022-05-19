@@ -1,0 +1,16 @@
+PODS:
+  - OpenSSL-Universal (1.1.1500)
+
+DEPENDENCIES:
+  - OpenSSL-Universal
+
+SPEC REPOS:
+  trunk:
+    - OpenSSL-Universal
+
+SPEC CHECKSUMS:
+  OpenSSL-Universal: 5d1de8d199ea9684d7ee48a8caa38d5dbfee1981
+
+PODFILE CHECKSUM: 6378b1899245525a944decbdd3745bcd79a901bd
+
+COCOAPODS: 1.11.3

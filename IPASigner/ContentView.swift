@@ -8,25 +8,40 @@
 import SwiftUI
 
 struct ContentView: View {
-
+    
     @State private var ipaPath: String = ""
     @State private var certURL: String = ""
     @State private var profileURL: String = ""
-
+    
     @State private var appID: String = ""
     @State private var appDisplayName: String = ""
     @State private var appVersion: String = ""
-    @State private var appShortVersion: String = ""
+    @State private var appMinimumiOSVersion: String = ""
     
     @State private var ignorePluglnsfolder = false
     @State private var ignoreWatch = true
     
     @State private var showingAlert = false
-
-    var window = NSScreen.main?.visibleFrame
+    @State private var alertTitle: String = ""
+    @State private var alertMessage: String = ""
+    
+    @State private var stateString = ""
+        
+    @State private var app: ALTApplication?
+    @State private var cert: ALTCertificate?
+    @State private var profile: ALTProvisioningProfile?
+    
+    let defaults = UserDefaults()
+    let fileManager = FileManager.default
+    let bundleID = Bundle.main.bundleIdentifier
+    let mktempPath = "/usr/bin/mktemp"
+    let tarPath = "/usr/bin/tar"
+    let unzipPath = "/usr/bin/unzip"
+    let zipPath = "/usr/bin/zip"
+        
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-
+            
             HStack {
                 Text("IPA File：")
                     .font(.body)
@@ -36,11 +51,11 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                        "File path or URL accepted",
-                        text: $ipaPath
-                    )
+                    "IPA File path",
+                    text: $ipaPath
+                )
                 .frame(width: 500, height: 30, alignment: .center)
-
+                
                 Button {
                     let panel = NSOpenPanel()
                     panel.canChooseFiles = true
@@ -52,7 +67,10 @@ struct ContentView: View {
                                 print("选择的ipa：\(url.absoluteString)")
                                 if url.pathExtension.lowercased() == "ipa" || url.pathExtension.lowercased() == "app" {
                                     self.ipaPath = url.path
+                                    self.unzipIPA(self.ipaPath)
                                 } else {
+                                    self.alertTitle = "提示"
+                                    self.alertMessage = "请选择ipa或者app"
                                     self.showingAlert = true
                                 }
                             }
@@ -61,9 +79,8 @@ struct ContentView: View {
                 } label: {
                     Text("导入")
                 }
+                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
-                
-
             }.padding(.top, 20)
             
             HStack {
@@ -75,18 +92,18 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                        "File path or URL accepted",
-                        text: $certURL
-                    )
+                    "Certificate File path",
+                    text: $certURL
+                )
                 .frame(width: 500, height: 30, alignment: .center)
-
+                
                 
                 Button {
                     self.showingAlert = true
-
                 } label: {
                     Text("导入")
                 }
+                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
             }
             
@@ -98,22 +115,42 @@ struct ContentView: View {
                     .frame(width: 140, height: 25, alignment: .topTrailing)
                     .offset(x: 0, y: 5)
                 
-                
                 TextField(
-                        "File path or URL accepted",
-                        text: $profileURL
-                    )
+                    "ProvisioningProfile File path",
+                    text: $profileURL
+                )
                 .frame(width: 500, height: 30, alignment: .center)
-
                 
                 Button {
-                    
+                    let panel = NSOpenPanel()
+                    panel.canChooseFiles = true
+                    panel.canChooseDirectories = false
+                    panel.allowsMultipleSelection = false
+                    panel.begin { result in
+                        if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+                            for url in panel.urls {
+                                print("选择的Provisioning Profile：\(url.absoluteString)")
+                                if url.pathExtension.lowercased() == "mobileprovision" {
+                                    if let inputProfile = ALTProvisioningProfile.init(url: url) {
+                                        self.profile = inputProfile
+                                        self.profileURL = inputProfile.name
+                                    }
+                                    
+                                } else {
+                                    self.alertTitle = "提示"
+                                    self.alertMessage = "请选择ipa或者app"
+                                    self.showingAlert = true
+                                }
+                            }
+                        }
+                    }
                 } label: {
                     Text("导入")
                 }
+                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
             }
-
+            
             HStack {
                 Text("App Display Name：")
                     .font(.body)
@@ -123,9 +160,9 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                        "This changes the app title on the home screen",
-                        text: $appDisplayName
-                    )
+                    "This changes the app title on the home screen",
+                    text: $appDisplayName
+                )
                 .frame(width: 500, height: 30, alignment: .center)
             }
             
@@ -138,13 +175,12 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                        "This changes the app version number",
-                        text: $appID
-                    )
+                    "This changes the app version number",
+                    text: $appID
+                )
                 .frame(width: 500, height: 30, alignment: .center)
-
+                
             }
-
             
             HStack {
                 Text("App Version：")
@@ -155,15 +191,15 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                        "This changes the app version number",
-                        text: $appVersion
-                    )
+                    "This changes the app version number",
+                    text: $appVersion
+                )
                 .frame(width: 400, height: 30, alignment: .center)
-
+                
                 
                 Toggle(isOn: $ignorePluglnsfolder) {
-                        Text("Ignore Pluglns folder")
-                    }
+                    Text("Ignore Pluglns folder")
+                }
                 
             }
             
@@ -176,34 +212,129 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                        "This changes the app short version number",
-                        text: $appShortVersion
-                    )
+                    "This changes the app short version number",
+                    text: $appMinimumiOSVersion
+                )
                 .frame(width: 400, height: 30, alignment: .center)
-
-                Toggle(isOn: $ignoreWatch) {
-                        Text("Ignore Watch")
-                    }
                 
+                Toggle(isOn: $ignoreWatch) {
+                    Text("Ignore Watch")
+                }
             }
-
+            
+            HStack {
+                Text(stateString)
+                    .font(.body)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.trailing)
+            }
+            
         }
         .frame(width:750, height: 400, alignment: .top)
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text("Order Complete"),
-                              message: Text("Thank you for shopping with us."),
-                              dismissButton: .default(Text("OK")))
+            getAlert()
         }
     }
     
     func validate(name: String) {
         
     }
-        
+    
+    func getAlert() -> Alert {
+        return Alert(title: Text(alertTitle),
+                     message: Text(alertMessage),
+                     dismissButton: .default(Text("OK")))
+    }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+extension ContentView {
+    
+    
+    func unzipIPA(_ inputFile: String) {
+        //MARK: Create working temp folder
+        var tempFolder: String! = nil
+        if let tmpFolder = makeTempFolder() {
+            tempFolder = tmpFolder
+        } else {
+            return
+        }
+        let workingDirectory = tempFolder.stringByAppendingPathComponent("out")
+        let payloadDirectory = workingDirectory.stringByAppendingPathComponent("Payload/")
+        
+        do {
+            let appBundleURL = try fileManager.unzipAppBundle(at: URL.init(fileURLWithPath: inputFile), toDirectory: URL.init(fileURLWithPath: payloadDirectory))
+            setStatus("Extracting ipa file: \(appBundleURL.absoluteString)")
+            if let application = ALTApplication.init(fileURL: appBundleURL) {
+                self.app = application
+                self.appVersion = application.version
+                self.appDisplayName = application.name
+                self.appID = application.bundleIdentifier
+                self.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
+            } else {
+                setStatus("Invalid ipa file")
+                cleanup(tempFolder); return
+            }
+            self.app = ALTApplication.init(fileURL: appBundleURL)
+            
+        } catch {
+            setStatus("Error extracting ipa file")
+            cleanup(tempFolder); return
+        }
+
+//        do {
+//            try fileManager.createDirectory(atPath: workingDirectory, withIntermediateDirectories: true, attributes: nil)
+//            setStatus("Extracting ipa file: \(workingDirectory)")
+//            let unzipTask = self.unzip(inputFile, outputPath: workingDirectory)
+//            if unzipTask.status != 0 {
+//                setStatus("Error extracting ipa file")
+//                cleanup(tempFolder); return
+//            }
+//        } catch {
+//            setStatus("Error extracting ipa file")
+//            cleanup(tempFolder); return
+//        }
+    }
+    
+    func makeTempFolder() -> String? {
+        let tempTask = Process().execute(mktempPath, workingDirectory: nil, arguments: ["-d", "-t", bundleID!])
+        if tempTask.status != 0 {
+            return nil
+        }
+        return tempTask.output.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+    }
+    
+    func unzip(_ inputFile: String, outputPath: String) -> AppSignerTaskOutput {
+        return Process().execute(unzipPath, workingDirectory: nil, arguments: ["-q", inputFile, "-d", outputPath])
+    }
+    
+    func zip(_ inputPath: String, outputFile: String) -> AppSignerTaskOutput {
+        return Process().execute(zipPath, workingDirectory: inputPath, arguments: ["-qry", outputFile, "."])
+    }
+    
+    func cleanup(_ tempFolder: String){
+        do {
+            Log.write("Deleting: \(tempFolder)")
+            try fileManager.removeItem(atPath: tempFolder)
+        } catch let error as NSError {
+            setStatus("Unable to delete temp folder")
+            Log.write(error.localizedDescription)
+        }
+        //        controlsEnabled(true)
+    }
+    
+    
+    func setStatus(_ status: String){
+        stateString = status
+        Log.write(status)
+    }
+    
+
+    
 }

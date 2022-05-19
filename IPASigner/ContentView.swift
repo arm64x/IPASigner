@@ -17,7 +17,6 @@ struct ContentView: View {
     @State private var appDisplayName: String = ""
     @State private var appVersion: String = ""
     @State private var appMinimumiOSVersion: String = ""
-    
     @State private var ignorePluglnsfolder = false
     @State private var ignoreWatch = true
     
@@ -31,7 +30,6 @@ struct ContentView: View {
     @State private var cert: ALTCertificate?
     @State private var profile: ALTProvisioningProfile?
     
-    let defaults = UserDefaults()
     let fileManager = FileManager.default
     let bundleID = Bundle.main.bundleIdentifier
     let mktempPath = "/usr/bin/mktemp"
@@ -215,11 +213,13 @@ struct ContentView: View {
         .frame(width:750, height: 400, alignment: .top)
         .alert(isPresented: $showingAlert) {
             getAlert()
-        }
+        }        
     }
     
     func validate(name: String) {
-        
+//        if let p12Data = AppDefaults.shared.signingCertificate, let password = AppDefaults.shared.signingCertificatePassword {
+//            self.cert = ALTCertificate.init(p12Data: p12Data, password: password)
+//        }
     }
     
     func getAlert() -> Alert {
@@ -233,7 +233,6 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-        
     }
 }
 
@@ -255,6 +254,13 @@ extension ContentView {
                                 if let inputCert = ALTCertificate.init(p12Data: data, password: "123") {
                                     self.cert = inputCert
                                     self.certURL = inputCert.name
+                                    AppDefaults.shared.reset()
+                                    self.profile = nil
+                                    self.profileURL = ""
+                                    AppDefaults.shared.signingCertificateName = inputCert.name
+                                    AppDefaults.shared.signingCertificateSerialNumber = inputCert.serialNumber
+                                    AppDefaults.shared.signingCertificate = data
+                                    AppDefaults.shared.signingCertificatePassword = "123"
                                 } else {
                                     self.alertMessage = "证书无效或密码错误"
                                     self.showingAlert = true
@@ -270,10 +276,30 @@ extension ContentView {
                         
                     case .Profile:
                         if url.pathExtension.lowercased() == "mobileprovision" {
-                            if let inputProfile = ALTProvisioningProfile.init(url: url) {
-                                self.profile = inputProfile
-                                self.profileURL = inputProfile.name
+                            if let cert = self.cert {
+                                if let inputProfile = ALTProvisioningProfile.init(url: url) {
+                                    var matched = false
+                                    for profileCertificate in inputProfile.certificates {
+                                        if cert.serialNumber == profileCertificate.serialNumber {
+                                            matched = true
+                                        }
+                                    }
+                                    if matched {
+                                        self.profile = inputProfile
+                                        self.profileURL = inputProfile.name
+                                    } else {
+                                        self.alertMessage = "所导入的mobileprovision和p12证书不匹配"
+                                        self.showingAlert = true
+                                    }
+                                } else {
+                                    self.alertMessage = "所导入的mobileprovision无效"
+                                    self.showingAlert = true
+                                }
+                            } else {
+                                self.alertMessage = "请先导入p12证书再导入mobileprovision"
+                                self.showingAlert = true
                             }
+                          
                         } else {
                             self.alertMessage = "请选择mobileprovision"
                             self.showingAlert = true
@@ -390,15 +416,11 @@ extension ContentView {
             setStatus("Unable to delete temp folder")
             Log.write(error.localizedDescription)
         }
-        //        controlsEnabled(true)
     }
-    
-    
+        
     func setStatus(_ status: String){
         stateString = status
         Log.write(status)
     }
-    
-    
-    
+  
 }

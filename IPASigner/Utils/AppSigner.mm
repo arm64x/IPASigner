@@ -181,52 +181,6 @@ std::string CertificatesContent(ALTCertificate *altCertificate)
     OpenSSL_add_all_algorithms();
 }
 
-- (void)unzipAppBundleAtURL:(NSURL *)ipaURL
-         outputDirectoryURL:(NSURL *)outputDirectoryURL
-            progressHandler:(void (^_Nullable)(NSString *entry, unz_file_info zipInfo, long entryNumber, long total))progressHandler
-          completionHandler:(void (^)(BOOL success, ALTApplication *application, NSError *error))completionHandler {
-    __block NSError *error = nil;
-    if ([ipaURL.pathExtension.lowercaseString isEqualToString:@"ipa"]) {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            NSLog(@"outputDirectoryURL:%@",outputDirectoryURL);
-            //
-            BOOL isDir = NO;
-            if ([[NSFileManager defaultManager] fileExistsAtPath:outputDirectoryURL.path isDirectory:&isDir]) {
-                [[NSFileManager defaultManager] removeItemAtPath:outputDirectoryURL.path error:nil];
-            }
-            
-            // ipa解压文件夹，清理缓存时清理
-            if (![[NSFileManager defaultManager] createDirectoryAtURL:outputDirectoryURL withIntermediateDirectories:YES attributes:nil error:&error]) {
-                completionHandler(NO, nil, error);
-                return;
-            }
-            [SSZipArchive unzipFileAtPath:ipaURL.path toDestination:outputDirectoryURL.path progressHandler:^(NSString * _Nonnull entry, unz_file_info zipInfo, long entryNumber, long total) {
-                progressHandler(entry, zipInfo, entryNumber, total);
-            } completionHandler:^(NSString * _Nonnull path, BOOL succeeded, NSError * _Nullable error) {
-                NSURL *appBundleURL = [self getAppBundleAtURL:outputDirectoryURL error:&error];
-                if (appBundleURL == nil) {
-                    completionHandler(NO, nil, error);
-                    return;
-                }
-                // 设置文件权限
-                [self setFilePosixPermissions:appBundleURL];
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    ALTApplication *application = [[ALTApplication alloc] initWithFileURL:appBundleURL];
-                    if (application == nil) {
-                        completionHandler(NO, application, [NSError errorWithDomain:AltSignErrorDomain code:ALTErrorMissingAppBundle userInfo:nil]);
-                    } else {
-                        completionHandler(YES, application, nil);
-                    }
-                });
-            }];
-        });
-    } else {
-        completionHandler(NO, nil, error);
-        return;
-    }
-
-}
-
 - (void)setFilePosixPermissions:(NSURL *)fileURL {
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:0777],NSFilePosixPermissions,nil];
     NSError *error = nil;
@@ -313,49 +267,7 @@ std::string CertificatesContent(ALTCertificate *altCertificate)
             completionHandler(NO, nil, resignedIPAURL);
         }
     });
-}
-
-
-- (nullable NSURL *)getAppBundleAtURL:(NSURL *)directoryURL error:(NSError **)error
-{
-    
-    NSURL *payloadDirectory = [directoryURL URLByAppendingPathComponent:@"Payload"];
-    NSArray *contents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:payloadDirectory.path error:error];
-    if (contents == nil)
-    {
-        return nil;
-    }
-    
-    for (NSString *filename in contents)
-    {
-        if ([filename.pathExtension.lowercaseString isEqualToString:@"app"])
-        {
-            NSURL *appBundleURL = [payloadDirectory URLByAppendingPathComponent:filename];
-            NSURL *outputURL = [directoryURL URLByAppendingPathComponent:filename];
-            
-            if (![[NSFileManager defaultManager] moveItemAtURL:appBundleURL toURL:outputURL error:error])
-            {
-                return nil;
-            }
-            
-            NSError *deleteError = nil;
-            if (![[NSFileManager defaultManager] removeItemAtURL:payloadDirectory error:&deleteError])
-            {
-                *error = deleteError;
-                
-                return nil;
-            }
-            
-            return outputURL;
-        }
-    }
-    
-    *error = [NSError errorWithDomain:AltSignErrorDomain code:ALTErrorMissingAppBundle userInfo:@{NSURLErrorKey: directoryURL}];
-    return nil;
-}
-
-
- 
+} 
 
 @end
 

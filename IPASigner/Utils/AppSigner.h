@@ -6,7 +6,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <SSZipArchive/SSZipArchive.h>
 
 @class ALTCertificate;
 @class ALTProvisioningProfile;
@@ -15,12 +14,6 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AppSigner : NSObject
-
-- (void)unzipAppBundleAtURL:(NSURL *)ipaURL
-         outputDirectoryURL:(NSURL *)outputDirectoryURL
-            progressHandler:(void (^_Nullable)(NSString *entry, unz_file_info zipInfo, long entryNumber, long total))progressHandler
-          completionHandler:(void (^)(BOOL success, ALTApplication *_Nullable application, NSError *_Nullable error))completionHandler;
-
 
 - (void)signAppWithAplication:(ALTApplication *)application
                   certificate:(ALTCertificate *)certificate

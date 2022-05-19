@@ -22,11 +22,11 @@ struct ContentView: View {
     @State private var ignoreWatch = true
     
     @State private var showingAlert = false
-    @State private var alertTitle: String = ""
+    @State private var alertTitle: String = "提示"
     @State private var alertMessage: String = ""
     
     @State private var stateString = ""
-        
+    
     @State private var app: ALTApplication?
     @State private var cert: ALTCertificate?
     @State private var profile: ALTProvisioningProfile?
@@ -38,10 +38,15 @@ struct ContentView: View {
     let tarPath = "/usr/bin/tar"
     let unzipPath = "/usr/bin/unzip"
     let zipPath = "/usr/bin/zip"
-        
+    
+    enum SignResourceType {
+        case Cert
+        case Profile
+        case IPA
+    }
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
-            
             HStack {
                 Text("IPA File：")
                     .font(.body)
@@ -57,25 +62,7 @@ struct ContentView: View {
                 .frame(width: 500, height: 30, alignment: .center)
                 
                 Button {
-                    let panel = NSOpenPanel()
-                    panel.canChooseFiles = true
-                    panel.canChooseDirectories = false
-                    panel.allowsMultipleSelection = false
-                    panel.begin { result in
-                        if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                            for url in panel.urls {
-                                print("选择的ipa：\(url.absoluteString)")
-                                if url.pathExtension.lowercased() == "ipa" || url.pathExtension.lowercased() == "app" {
-                                    self.ipaPath = url.path
-                                    self.unzipIPA(self.ipaPath)
-                                } else {
-                                    self.alertTitle = "提示"
-                                    self.alertMessage = "请选择ipa或者app"
-                                    self.showingAlert = true
-                                }
-                            }
-                        }
-                    }
+                    doBrowse(resourceType: .IPA)
                 } label: {
                     Text("导入")
                 }
@@ -97,39 +84,8 @@ struct ContentView: View {
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 
-                
                 Button {
-                    let panel = NSOpenPanel()
-                    panel.canChooseFiles = true
-                    panel.canChooseDirectories = false
-                    panel.allowsMultipleSelection = false
-                    panel.begin { result in
-                        if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                            for url in panel.urls {
-                                print("选择的Provisioning Profile：\(url.absoluteString)")
-                                if url.pathExtension.lowercased() == "p12" {
-                                    if let data: Data = NSData.init(contentsOf: url) as Data? {
-                                        if let inputCert = ALTCertificate.init(p12Data: data, password: "123") {
-                                            self.cert = inputCert
-                                            self.certURL = inputCert.name
-                                        } else {
-                                            self.alertTitle = "提示"
-                                            self.alertMessage = "证书无效或密码错误"
-                                            self.showingAlert = true
-                                        }
-                                    } else {
-                                        self.alertTitle = "提示"
-                                        self.alertMessage = "证书无效"
-                                        self.showingAlert = true
-                                    }
-                                } else {
-                                    self.alertTitle = "提示"
-                                    self.alertMessage = "请选择p12"
-                                    self.showingAlert = true
-                                }
-                            }
-                        }
-                    }
+                    doBrowse(resourceType: .Cert)
                 } label: {
                     Text("导入")
                 }
@@ -152,28 +108,7 @@ struct ContentView: View {
                 .frame(width: 500, height: 30, alignment: .center)
                 
                 Button {
-                    let panel = NSOpenPanel()
-                    panel.canChooseFiles = true
-                    panel.canChooseDirectories = false
-                    panel.allowsMultipleSelection = false
-                    panel.begin { result in
-                        if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
-                            for url in panel.urls {
-                                print("选择的Provisioning Profile：\(url.absoluteString)")
-                                if url.pathExtension.lowercased() == "mobileprovision" {
-                                    if let inputProfile = ALTProvisioningProfile.init(url: url) {
-                                        self.profile = inputProfile
-                                        self.profileURL = inputProfile.name
-                                    }
-                                    
-                                } else {
-                                    self.alertTitle = "提示"
-                                    self.alertMessage = "请选择ipa或者app"
-                                    self.showingAlert = true
-                                }
-                            }
-                        }
-                    }
+                    doBrowse(resourceType: .Profile)
                 } label: {
                     Text("导入")
                 }
@@ -268,7 +203,7 @@ struct ContentView: View {
                     .frame(width: 500, height: 40)
                 
                 Button {
-                    startSign()
+                    startSigning()
                 } label: {
                     Text("签名")
                 }
@@ -284,7 +219,7 @@ struct ContentView: View {
     }
     
     func validate(name: String) {
-
+        
     }
     
     func getAlert() -> Alert {
@@ -298,11 +233,66 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-
+        
     }
 }
 
 extension ContentView {
+    
+    func doBrowse(resourceType: SignResourceType) {
+        let panel = NSOpenPanel()
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        panel.allowsMultipleSelection = false
+        panel.begin { result in
+            if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+                if let url = panel.urls.first {
+                    print("选择的File：\(url.absoluteString)")
+                    switch resourceType {
+                    case .Cert:
+                        if url.pathExtension.lowercased() == "p12" {
+                            if let data: Data = NSData.init(contentsOf: url) as Data? {
+                                if let inputCert = ALTCertificate.init(p12Data: data, password: "123") {
+                                    self.cert = inputCert
+                                    self.certURL = inputCert.name
+                                } else {
+                                    self.alertMessage = "证书无效或密码错误"
+                                    self.showingAlert = true
+                                }
+                            } else {
+                                self.alertMessage = "证书无效"
+                                self.showingAlert = true
+                            }
+                        } else {
+                            self.alertMessage = "请选择p12"
+                            self.showingAlert = true
+                        }
+                        
+                    case .Profile:
+                        if url.pathExtension.lowercased() == "mobileprovision" {
+                            if let inputProfile = ALTProvisioningProfile.init(url: url) {
+                                self.profile = inputProfile
+                                self.profileURL = inputProfile.name
+                            }
+                        } else {
+                            self.alertMessage = "请选择mobileprovision"
+                            self.showingAlert = true
+                        }
+                    case .IPA:
+                        if url.pathExtension.lowercased() == "ipa" {
+                            self.ipaPath = url.path
+                            self.unzipIPA(self.ipaPath)
+                        } else if url.pathExtension.lowercased() == "app" {
+                            
+                        } else {
+                            self.alertMessage = "请选择ipa或者app"
+                            self.showingAlert = true
+                        }
+                    }
+                }
+            }
+        }
+    }
     
     func unzipIPA(_ inputFile: String) {
         //MARK: Create working temp folder
@@ -334,22 +324,22 @@ extension ContentView {
             setStatus("Error extracting ipa file")
             cleanup(tempFolder); return
         }
-
-//        do {
-//            try fileManager.createDirectory(atPath: workingDirectory, withIntermediateDirectories: true, attributes: nil)
-//            setStatus("Extracting ipa file: \(workingDirectory)")
-//            let unzipTask = self.unzip(inputFile, outputPath: workingDirectory)
-//            if unzipTask.status != 0 {
-//                setStatus("Error extracting ipa file")
-//                cleanup(tempFolder); return
-//            }
-//        } catch {
-//            setStatus("Error extracting ipa file")
-//            cleanup(tempFolder); return
-//        }
+        
+        //        do {
+        //            try fileManager.createDirectory(atPath: workingDirectory, withIntermediateDirectories: true, attributes: nil)
+        //            setStatus("Extracting ipa file: \(workingDirectory)")
+        //            let unzipTask = self.unzip(inputFile, outputPath: workingDirectory)
+        //            if unzipTask.status != 0 {
+        //                setStatus("Error extracting ipa file")
+        //                cleanup(tempFolder); return
+        //            }
+        //        } catch {
+        //            setStatus("Error extracting ipa file")
+        //            cleanup(tempFolder); return
+        //        }
     }
     
-    func startSign() {
+    func startSigning() {
         if let app = self.app, let cert = self.cert, let profile = self.profile {
             AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
                 self.setStatus(log)
@@ -358,10 +348,20 @@ extension ContentView {
                     self.setStatus("签名成功：\(ipaURL?.absoluteString)")
                 } else {
                     self.setStatus("签名失败：\(error.debugDescription)")
-
                 }
             }
-
+        } else {
+            if self.app == nil {
+                self.alertMessage = "请导入IPA"
+                self.showingAlert = true
+            } else if self.cert == nil {
+                self.alertMessage = "请导入签名证书"
+                self.showingAlert = true
+            } else if self.profile == nil {
+                self.alertMessage = "请导入描述文件"
+                self.showingAlert = true
+            }
+                        
         }
     }
     
@@ -399,6 +399,6 @@ extension ContentView {
         Log.write(status)
     }
     
-
+    
     
 }

@@ -13,7 +13,7 @@ struct ContentView: View {
     @State private var certURL: String = ""
     @State private var profileURL: String = ""
     
-    @State private var appID: String = ""
+    @State private var appBundleId: String = ""
     @State private var appDisplayName: String = ""
     @State private var appVersion: String = ""
     @State private var appMinimumiOSVersion: String = ""
@@ -99,7 +99,37 @@ struct ContentView: View {
                 
                 
                 Button {
-                    self.showingAlert = true
+                    let panel = NSOpenPanel()
+                    panel.canChooseFiles = true
+                    panel.canChooseDirectories = false
+                    panel.allowsMultipleSelection = false
+                    panel.begin { result in
+                        if result.rawValue == NSApplication.ModalResponse.OK.rawValue {
+                            for url in panel.urls {
+                                print("选择的Provisioning Profile：\(url.absoluteString)")
+                                if url.pathExtension.lowercased() == "p12" {
+                                    if let data: Data = NSData.init(contentsOf: url) as Data? {
+                                        if let inputCert = ALTCertificate.init(p12Data: data, password: "123") {
+                                            self.cert = inputCert
+                                            self.certURL = inputCert.name
+                                        } else {
+                                            self.alertTitle = "提示"
+                                            self.alertMessage = "证书无效或密码错误"
+                                            self.showingAlert = true
+                                        }
+                                    } else {
+                                        self.alertTitle = "提示"
+                                        self.alertMessage = "证书无效"
+                                        self.showingAlert = true
+                                    }
+                                } else {
+                                    self.alertTitle = "提示"
+                                    self.alertMessage = "请选择p12"
+                                    self.showingAlert = true
+                                }
+                            }
+                        }
+                    }
                 } label: {
                     Text("导入")
                 }
@@ -167,7 +197,7 @@ struct ContentView: View {
             }
             
             HStack {
-                Text("App ID：")
+                Text("App Bundle ID：")
                     .font(.body)
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
@@ -175,8 +205,8 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                    "This changes the app version number",
-                    text: $appID
+                    "This changes the app bundle identifier",
+                    text: $appBundleId
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 
@@ -204,7 +234,7 @@ struct ContentView: View {
             }
             
             HStack {
-                Text("App Short Version：")
+                Text("Minimum iOS Version：")
                     .font(.body)
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
@@ -212,7 +242,7 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                    "This changes the app short version number",
+                    "This changes the app minimum iOS version",
                     text: $appMinimumiOSVersion
                 )
                 .frame(width: 400, height: 30, alignment: .center)
@@ -223,10 +253,27 @@ struct ContentView: View {
             }
             
             HStack {
+                Text("Signing State：")
+                    .font(.body)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.center)
+                    .frame(width: 140, height: 25, alignment: .topTrailing)
+                    .offset(x: 0, y: 5)
+                
+                
                 Text(stateString)
                     .font(.body)
                     .foregroundColor(.black)
                     .multilineTextAlignment(.trailing)
+                    .frame(width: 500, height: 40)
+                
+                Button {
+                    startSign()
+                } label: {
+                    Text("签名")
+                }
+                .foregroundColor(.blue)
+                .frame(width: 80, height: 30, alignment: .center)
             }
             
         }
@@ -237,7 +284,7 @@ struct ContentView: View {
     }
     
     func validate(name: String) {
-        
+
     }
     
     func getAlert() -> Alert {
@@ -251,11 +298,11 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+
     }
 }
 
 extension ContentView {
-    
     
     func unzipIPA(_ inputFile: String) {
         //MARK: Create working temp folder
@@ -275,7 +322,7 @@ extension ContentView {
                 self.app = application
                 self.appVersion = application.version
                 self.appDisplayName = application.name
-                self.appID = application.bundleIdentifier
+                self.appBundleId = application.bundleIdentifier
                 self.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
             } else {
                 setStatus("Invalid ipa file")
@@ -301,6 +348,23 @@ extension ContentView {
 //            cleanup(tempFolder); return
 //        }
     }
+    
+    func startSign() {
+        if let app = self.app, let cert = self.cert, let profile = self.profile {
+            AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
+                self.setStatus(log)
+            } completionHandler: { success, error, ipaURL in
+                if success {
+                    self.setStatus("签名成功：\(ipaURL?.absoluteString)")
+                } else {
+                    self.setStatus("签名失败：\(error.debugDescription)")
+
+                }
+            }
+
+        }
+    }
+    
     
     func makeTempFolder() -> String? {
         let tempTask = Process().execute(mktempPath, workingDirectory: nil, arguments: ["-d", "-t", bundleID!])

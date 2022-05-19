@@ -1,16 +1,20 @@
 PODS:
   - OpenSSL-Universal (1.1.1500)
+  - SSZipArchive (2.4.3)
 
 DEPENDENCIES:
   - OpenSSL-Universal
+  - SSZipArchive
 
 SPEC REPOS:
   trunk:
     - OpenSSL-Universal
+    - SSZipArchive
 
 SPEC CHECKSUMS:
   OpenSSL-Universal: 5d1de8d199ea9684d7ee48a8caa38d5dbfee1981
+  SSZipArchive: fe6a26b2a54d5a0890f2567b5cc6de5caa600aef
 
-PODFILE CHECKSUM: 6378b1899245525a944decbdd3745bcd79a901bd
+PODFILE CHECKSUM: 3a959041bab41c277a0e5760afa9138470e81e08
 
 COCOAPODS: 1.11.3

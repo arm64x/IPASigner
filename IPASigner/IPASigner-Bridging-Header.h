@@ -26,3 +26,7 @@
 // Categories
 #import "NSFileManager+Zip.h"
 #import "NSError+ALTErrors.h"
+
+
+#import "ZLogManager.h"
+#import "AppSigner.h"

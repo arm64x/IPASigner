@@ -9,26 +9,13 @@ import SwiftUI
 
 struct ContentView: View {
     
-    @State private var ipaPath: String = ""
-    @State private var certURL: String = ""
-    @State private var profileURL: String = ""
     
-    @State private var appBundleId: String = ""
-    @State private var appDisplayName: String = ""
-    @State private var appVersion: String = ""
-    @State private var appMinimumiOSVersion: String = ""
-    @State private var ignorePluglnsfolder = false
-    @State private var ignoreWatch = true
+    @State private var signingOptions: SigningOptions = SigningOptions()
     
     @State private var showingAlert = false
     @State private var alertTitle: String = "提示"
     @State private var alertMessage: String = ""
-    
     @State private var stateString = ""
-    
-    @State private var app: ALTApplication?
-    @State private var cert: ALTCertificate?
-    @State private var profile: ALTProvisioningProfile?
     
     let fileManager = FileManager.default
     let bundleID = Bundle.main.bundleIdentifier
@@ -37,14 +24,24 @@ struct ContentView: View {
     let unzipPath = "/usr/bin/unzip"
     let zipPath = "/usr/bin/zip"
     
-    enum SignResourceType {
+    enum ImportResourceType {
         case Cert
         case Profile
         case IPA
     }
-    
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        DispatchQueue.main.async {
+            if let p12Data = AppDefaults.shared.signingCertificate {
+                self.signingOptions.signingCert = ALTCertificate.init(p12Data: p12Data, password: AppDefaults.shared.signingCertificatePassword)
+                self.signingOptions.certURL = self.signingOptions.signingCert == nil ? "" : self.signingOptions.signingCert!.name
+            }
+            if let profileData = AppDefaults.shared.signingProvisioningProfile {
+                self.signingOptions.signingProfile = ALTProvisioningProfile.init(data: profileData)
+                self.signingOptions.profileURL = self.signingOptions.signingProfile == nil ? "" : self.signingOptions.signingProfile!.name
+            }
+        }
+        return VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text("IPA File：")
                     .font(.body)
@@ -55,7 +52,7 @@ struct ContentView: View {
                 
                 TextField(
                     "IPA File path",
-                    text: $ipaPath
+                    text: $signingOptions.ipaPath
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 
@@ -78,7 +75,7 @@ struct ContentView: View {
                 
                 TextField(
                     "Certificate File path",
-                    text: $certURL
+                    text: $signingOptions.certURL
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 
@@ -101,7 +98,7 @@ struct ContentView: View {
                 
                 TextField(
                     "ProvisioningProfile File path",
-                    text: $profileURL
+                    text: $signingOptions.profileURL
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 
@@ -124,7 +121,7 @@ struct ContentView: View {
                 
                 TextField(
                     "This changes the app title on the home screen",
-                    text: $appDisplayName
+                    text: $signingOptions.appDisplayName
                 )
                 .frame(width: 500, height: 30, alignment: .center)
             }
@@ -139,7 +136,7 @@ struct ContentView: View {
                 
                 TextField(
                     "This changes the app bundle identifier",
-                    text: $appBundleId
+                    text: $signingOptions.appBundleId
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 
@@ -155,12 +152,12 @@ struct ContentView: View {
                 
                 TextField(
                     "This changes the app version number",
-                    text: $appVersion
+                    text: $signingOptions.appVersion
                 )
                 .frame(width: 400, height: 30, alignment: .center)
                 
                 
-                Toggle(isOn: $ignorePluglnsfolder) {
+                Toggle(isOn: $signingOptions.ignorePluglnsfolder) {
                     Text("Ignore Pluglns folder")
                 }
                 
@@ -176,11 +173,11 @@ struct ContentView: View {
                 
                 TextField(
                     "This changes the app minimum iOS version",
-                    text: $appMinimumiOSVersion
+                    text: $signingOptions.appMinimumiOSVersion
                 )
                 .frame(width: 400, height: 30, alignment: .center)
                 
-                Toggle(isOn: $ignoreWatch) {
+                Toggle(isOn: $signingOptions.ignoreWatch) {
                     Text("Ignore Watch")
                 }
             }
@@ -238,7 +235,7 @@ struct ContentView_Previews: PreviewProvider {
 
 extension ContentView {
     
-    func doBrowse(resourceType: SignResourceType) {
+    func doBrowse(resourceType: ImportResourceType) {
         let panel = NSOpenPanel()
         panel.canChooseFiles = true
         panel.canChooseDirectories = false
@@ -252,15 +249,15 @@ extension ContentView {
                         if url.pathExtension.lowercased() == "p12" {
                             if let data: Data = NSData.init(contentsOf: url) as Data? {
                                 if let inputCert = ALTCertificate.init(p12Data: data, password: "123") {
-                                    self.cert = inputCert
-                                    self.certURL = inputCert.name
                                     AppDefaults.shared.reset()
-                                    self.profile = nil
-                                    self.profileURL = ""
-                                    AppDefaults.shared.signingCertificateName = inputCert.name
-                                    AppDefaults.shared.signingCertificateSerialNumber = inputCert.serialNumber
+                                    self.signingOptions.signingProfile = nil
+                                    self.signingOptions.signingCert = inputCert
+                                    self.signingOptions.certURL = inputCert.name
+                                    self.signingOptions.profileURL = ""
                                     AppDefaults.shared.signingCertificate = data
                                     AppDefaults.shared.signingCertificatePassword = "123"
+                                    AppDefaults.shared.signingCertificateName = inputCert.name
+                                    AppDefaults.shared.signingCertificateSerialNumber = inputCert.serialNumber
                                 } else {
                                     self.alertMessage = "证书无效或密码错误"
                                     self.showingAlert = true
@@ -276,7 +273,7 @@ extension ContentView {
                         
                     case .Profile:
                         if url.pathExtension.lowercased() == "mobileprovision" {
-                            if let cert = self.cert {
+                            if let cert = self.signingOptions.signingCert {
                                 if let inputProfile = ALTProvisioningProfile.init(url: url) {
                                     var matched = false
                                     for profileCertificate in inputProfile.certificates {
@@ -285,8 +282,9 @@ extension ContentView {
                                         }
                                     }
                                     if matched {
-                                        self.profile = inputProfile
-                                        self.profileURL = inputProfile.name
+                                        self.signingOptions.signingProfile = inputProfile
+                                        AppDefaults.shared.signingProvisioningProfile = inputProfile.data
+                                        self.signingOptions.profileURL = inputProfile.name
                                     } else {
                                         self.alertMessage = "所导入的mobileprovision和p12证书不匹配"
                                         self.showingAlert = true
@@ -306,8 +304,8 @@ extension ContentView {
                         }
                     case .IPA:
                         if url.pathExtension.lowercased() == "ipa" {
-                            self.ipaPath = url.path
-                            self.unzipIPA(self.ipaPath)
+                            self.signingOptions.ipaPath = url.path
+                            self.unzipIPA(self.signingOptions.ipaPath)
                         } else if url.pathExtension.lowercased() == "app" {
                             
                         } else {
@@ -335,16 +333,16 @@ extension ContentView {
             let appBundleURL = try fileManager.unzipAppBundle(at: URL.init(fileURLWithPath: inputFile), toDirectory: URL.init(fileURLWithPath: payloadDirectory))
             setStatus("Extracting ipa file: \(appBundleURL.absoluteString)")
             if let application = ALTApplication.init(fileURL: appBundleURL) {
-                self.app = application
-                self.appVersion = application.version
-                self.appDisplayName = application.name
-                self.appBundleId = application.bundleIdentifier
-                self.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
+                self.signingOptions.app = application
+                self.signingOptions.appVersion = application.version
+                self.signingOptions.appDisplayName = application.name
+                self.signingOptions.appBundleId = application.bundleIdentifier
+                self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
             } else {
                 setStatus("Invalid ipa file")
                 cleanup(tempFolder); return
             }
-            self.app = ALTApplication.init(fileURL: appBundleURL)
+            self.signingOptions.app = ALTApplication.init(fileURL: appBundleURL)
             
         } catch {
             setStatus("Error extracting ipa file")
@@ -366,7 +364,7 @@ extension ContentView {
     }
     
     func startSigning() {
-        if let app = self.app, let cert = self.cert, let profile = self.profile {
+        if let app = self.signingOptions.app, let cert = self.signingOptions.signingCert, let profile = self.signingOptions.signingProfile {
             AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
                 self.setStatus(log)
             } completionHandler: { success, error, ipaURL in
@@ -377,13 +375,13 @@ extension ContentView {
                 }
             }
         } else {
-            if self.app == nil {
+            if self.signingOptions.app == nil {
                 self.alertMessage = "请导入IPA"
                 self.showingAlert = true
-            } else if self.cert == nil {
+            } else if self.signingOptions.signingCert == nil {
                 self.alertMessage = "请导入签名证书"
                 self.showingAlert = true
-            } else if self.profile == nil {
+            } else if self.signingOptions.signingProfile == nil {
                 self.alertMessage = "请导入描述文件"
                 self.showingAlert = true
             }
@@ -424,3 +422,5 @@ extension ContentView {
     }
   
 }
+
+

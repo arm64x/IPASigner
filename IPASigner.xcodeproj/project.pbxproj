@@ -39,6 +39,7 @@
 		165C9F0F2835F05400AC6D35 /* ZLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F0D2835F05400AC6D35 /* ZLogManager.m */; };
 		165C9F122836047400AC6D35 /* AppSigner.mm in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F102836047400AC6D35 /* AppSigner.mm */; };
 		165C9F16283644AA00AC6D35 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F15283644AA00AC6D35 /* AppDefaults.swift */; };
+		16932F0B283797890030C319 /* SigningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16932F0A283797890030C319 /* SigningOptions.swift */; };
 		88A68B8FEE043C9A70D56B03 /* Pods_IPASigner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */; };
 /* End PBXBuildFile section */
 
@@ -207,6 +208,7 @@
 		165C9F102836047400AC6D35 /* AppSigner.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppSigner.mm; sourceTree = "<group>"; };
 		165C9F112836047400AC6D35 /* AppSigner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSigner.h; sourceTree = "<group>"; };
 		165C9F15283644AA00AC6D35 /* AppDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
+		16932F0A283797890030C319 /* SigningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningOptions.swift; sourceTree = "<group>"; };
 		3815835F2C723BA87BC4E1B1 /* Pods-IPASigner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPASigner.release.xcconfig"; path = "Target Support Files/Pods-IPASigner/Pods-IPASigner.release.xcconfig"; sourceTree = "<group>"; };
 		41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IPASigner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A29CA8A9C92E885A8F4FE4 /* Pods-IPASigner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPASigner.debug.xcconfig"; path = "Target Support Files/Pods-IPASigner/Pods-IPASigner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -255,6 +257,7 @@
 			children = (
 				165C9E3D2834AF6D00AC6D35 /* IPASignerApp.swift */,
 				165C9E3F2834AF6D00AC6D35 /* ContentView.swift */,
+				16932F0A283797890030C319 /* SigningOptions.swift */,
 				165C9E4C2835D31300AC6D35 /* NSTask-execute.swift */,
 				165C9EEA2835E4D900AC6D35 /* IPASigner-Bridging-Header.h */,
 				165C9EE22835E1EF00AC6D35 /* Utils */,
@@ -623,6 +626,7 @@
 				165C9E512835D9E000AC6D35 /* StringByAppendingPathComponent.swift in Sources */,
 				165C9F0B2835EECC00AC6D35 /* signing.cpp in Sources */,
 				165C9F052835EECC00AC6D35 /* json.cpp in Sources */,
+				16932F0B283797890030C319 /* SigningOptions.swift in Sources */,
 				165C9E782835E09C00AC6D35 /* mztools.c in Sources */,
 				165C9E692835E02D00AC6D35 /* NSError+ALTErrors.m in Sources */,
 				165C9F0C2835EECC00AC6D35 /* archo.cpp in Sources */,

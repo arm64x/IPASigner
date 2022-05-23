@@ -10,8 +10,8 @@ import Foundation
 struct SigningOptions {
     
     var ipaPath: String = ""
-    var certURL: String = ""
-    var profileURL: String = ""
+    var cert: String = ""
+    var profile: String = ""
     var appBundleId: String = ""
     var appDisplayName: String = ""
     var appVersion: String = ""

@@ -9,9 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     
-    
     @State private var signingOptions: SigningOptions = SigningOptions()
-    
     @State private var showingAlert = false
     @State private var alertTitle: String = "提示"
     @State private var alertMessage: String = ""
@@ -34,13 +32,14 @@ struct ContentView: View {
         DispatchQueue.main.async {
             if let p12Data = AppDefaults.shared.signingCertificate {
                 self.signingOptions.signingCert = ALTCertificate.init(p12Data: p12Data, password: AppDefaults.shared.signingCertificatePassword)
-                self.signingOptions.certURL = self.signingOptions.signingCert == nil ? "" : self.signingOptions.signingCert!.name
+                self.signingOptions.cert = self.signingOptions.signingCert == nil ? "" : self.signingOptions.signingCert!.name
             }
             if let profileData = AppDefaults.shared.signingProvisioningProfile {
                 self.signingOptions.signingProfile = ALTProvisioningProfile.init(data: profileData)
-                self.signingOptions.profileURL = self.signingOptions.signingProfile == nil ? "" : self.signingOptions.signingProfile!.name
+                self.signingOptions.profile = self.signingOptions.signingProfile == nil ? "" : self.signingOptions.signingProfile!.name
             }
         }
+
         return VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text("IPA File：")
@@ -73,14 +72,23 @@ struct ContentView: View {
                     .frame(width: 140, height: 25, alignment: .topTrailing)
                     .offset(x: 0, y: 5)
                 
-                TextField(
-                    "Certificate File path",
-                    text: $signingOptions.certURL
-                )
+//                TextField(
+//                    "Certificate File path",
+//                    text: $signingOptions.cert
+//                )
+//                .disabled(true)
+//                .frame(width: 500, height: 30, alignment: .center)
+                
+                Menu(self.signingOptions.cert) {
+                    Button("Duplicate", action: {})
+                    Button("Rename", action: {})
+                    Button("Delete…", action: {})
+                }
                 .frame(width: 500, height: 30, alignment: .center)
                 
                 Button {
                     doBrowse(resourceType: .Cert)
+    
                 } label: {
                     Text("导入")
                 }
@@ -98,9 +106,10 @@ struct ContentView: View {
                 
                 TextField(
                     "ProvisioningProfile File path",
-                    text: $signingOptions.profileURL
+                    text: $signingOptions.profile
                 )
                 .frame(width: 500, height: 30, alignment: .center)
+                .disabled(true)
                 
                 Button {
                     doBrowse(resourceType: .Profile)
@@ -190,7 +199,6 @@ struct ContentView: View {
                     .frame(width: 140, height: 25, alignment: .topTrailing)
                     .offset(x: 0, y: 5)
                 
-                
                 Text(stateString)
                     .font(.body)
                     .foregroundColor(.black)
@@ -210,13 +218,8 @@ struct ContentView: View {
         .frame(width:750, height: 400, alignment: .top)
         .alert(isPresented: $showingAlert) {
             getAlert()
-        }        
-    }
-    
-    func validate(name: String) {
-//        if let p12Data = AppDefaults.shared.signingCertificate, let password = AppDefaults.shared.signingCertificatePassword {
-//            self.cert = ALTCertificate.init(p12Data: p12Data, password: password)
-//        }
+        }
+     
     }
     
     func getAlert() -> Alert {
@@ -252,8 +255,8 @@ extension ContentView {
                                     AppDefaults.shared.reset()
                                     self.signingOptions.signingProfile = nil
                                     self.signingOptions.signingCert = inputCert
-                                    self.signingOptions.certURL = inputCert.name
-                                    self.signingOptions.profileURL = ""
+                                    self.signingOptions.cert = inputCert.name
+                                    self.signingOptions.profile = ""
                                     AppDefaults.shared.signingCertificate = data
                                     AppDefaults.shared.signingCertificatePassword = "123"
                                     AppDefaults.shared.signingCertificateName = inputCert.name
@@ -284,7 +287,7 @@ extension ContentView {
                                     if matched {
                                         self.signingOptions.signingProfile = inputProfile
                                         AppDefaults.shared.signingProvisioningProfile = inputProfile.data
-                                        self.signingOptions.profileURL = inputProfile.name
+                                        self.signingOptions.profile = inputProfile.name
                                     } else {
                                         self.alertMessage = "所导入的mobileprovision和p12证书不匹配"
                                         self.showingAlert = true
@@ -348,19 +351,6 @@ extension ContentView {
             setStatus("Error extracting ipa file")
             cleanup(tempFolder); return
         }
-        
-        //        do {
-        //            try fileManager.createDirectory(atPath: workingDirectory, withIntermediateDirectories: true, attributes: nil)
-        //            setStatus("Extracting ipa file: \(workingDirectory)")
-        //            let unzipTask = self.unzip(inputFile, outputPath: workingDirectory)
-        //            if unzipTask.status != 0 {
-        //                setStatus("Error extracting ipa file")
-        //                cleanup(tempFolder); return
-        //            }
-        //        } catch {
-        //            setStatus("Error extracting ipa file")
-        //            cleanup(tempFolder); return
-        //        }
     }
     
     func startSigning() {

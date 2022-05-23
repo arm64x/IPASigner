@@ -16,9 +16,10 @@ struct SigningOptions {
     var appDisplayName: String = ""
     var appVersion: String = ""
     var appMinimumiOSVersion: String = ""
-    var ignorePluglnsfolder = false
-    var ignoreWatch = true
-    
+    var deletePluglnsfolder = false
+    var deleteWatch = true
+    var removeMinimumiOSVersion = false
+
     var app: ALTApplication?
     var signingCert: ALTCertificate?
     var signingProfile: ALTProvisioningProfile?

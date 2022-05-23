@@ -21,7 +21,11 @@ struct ContentView: View {
     let tarPath = "/usr/bin/tar"
     let unzipPath = "/usr/bin/unzip"
     let zipPath = "/usr/bin/zip"
-    
+    let defaultsPath = "/usr/bin/defaults"
+    let codesignPath = "/usr/bin/codesign"
+    let securityPath = "/usr/bin/security"
+    let chmodPath = "/bin/chmod"
+        
     enum ImportResourceType {
         case Cert
         case Profile
@@ -58,9 +62,9 @@ struct ContentView: View {
                 Button {
                     doBrowse(resourceType: .IPA)
                 } label: {
-                    Text("导入")
+                    Text("Browse")
                 }
-                .foregroundColor(.blue)
+//                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
             }.padding(.top, 20)
             
@@ -72,27 +76,19 @@ struct ContentView: View {
                     .frame(width: 140, height: 25, alignment: .topTrailing)
                     .offset(x: 0, y: 5)
                 
-//                TextField(
-//                    "Certificate File path",
-//                    text: $signingOptions.cert
-//                )
-//                .disabled(true)
-//                .frame(width: 500, height: 30, alignment: .center)
-                
-                Menu(self.signingOptions.cert) {
-                    Button("Duplicate", action: {})
-                    Button("Rename", action: {})
-                    Button("Delete…", action: {})
-                }
+                TextField(
+                    "Certificate File path",
+                    text: $signingOptions.cert
+                )
+                .disabled(true)
                 .frame(width: 500, height: 30, alignment: .center)
-                
+                                
                 Button {
                     doBrowse(resourceType: .Cert)
-    
                 } label: {
-                    Text("导入")
+                    Text("Browse")
                 }
-                .foregroundColor(.blue)
+//                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
             }
             
@@ -114,9 +110,9 @@ struct ContentView: View {
                 Button {
                     doBrowse(resourceType: .Profile)
                 } label: {
-                    Text("导入")
+                    Text("Browse")
                 }
-                .foregroundColor(.blue)
+//                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
             }
             
@@ -147,7 +143,11 @@ struct ContentView: View {
                     "This changes the app bundle identifier",
                     text: $signingOptions.appBundleId
                 )
-                .frame(width: 500, height: 30, alignment: .center)
+                .frame(width: 400, height: 30, alignment: .center)
+                
+                Toggle(isOn: $signingOptions.deleteWatch) {
+                    Text("Delete Watch")
+                }
                 
             }
             
@@ -166,8 +166,8 @@ struct ContentView: View {
                 .frame(width: 400, height: 30, alignment: .center)
                 
                 
-                Toggle(isOn: $signingOptions.ignorePluglnsfolder) {
-                    Text("Ignore Pluglns folder")
+                Toggle(isOn: $signingOptions.deletePluglnsfolder) {
+                    Text("Delete Pluglns Folder")
                 }
                 
             }
@@ -184,11 +184,13 @@ struct ContentView: View {
                     "This changes the app minimum iOS version",
                     text: $signingOptions.appMinimumiOSVersion
                 )
+                .disabled(true)
                 .frame(width: 400, height: 30, alignment: .center)
                 
-                Toggle(isOn: $signingOptions.ignoreWatch) {
-                    Text("Ignore Watch")
+                Toggle(isOn: $signingOptions.removeMinimumiOSVersion) {
+                    Text("Remove Minimum Version")
                 }
+     
             }
             
             HStack {
@@ -199,16 +201,14 @@ struct ContentView: View {
                     .frame(width: 140, height: 25, alignment: .topTrailing)
                     .offset(x: 0, y: 5)
                 
-                Text(stateString)
-                    .font(.body)
-                    .foregroundColor(.black)
-                    .multilineTextAlignment(.trailing)
+                TextEditor(text: $stateString)
                     .frame(width: 500, height: 40)
+                    .disabled(true)
                 
                 Button {
                     startSigning()
                 } label: {
-                    Text("签名")
+                    Text("Start")
                 }
                 .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
@@ -308,9 +308,10 @@ extension ContentView {
                     case .IPA:
                         if url.pathExtension.lowercased() == "ipa" {
                             self.signingOptions.ipaPath = url.path
-                            self.unzipIPA(self.signingOptions.ipaPath)
+                            self.unzipIPA(url)
                         } else if url.pathExtension.lowercased() == "app" {
-                            
+                            self.signingOptions.ipaPath = url.path
+                            self.importAppBundle(url)
                         } else {
                             self.alertMessage = "请选择ipa或者app"
                             self.showingAlert = true
@@ -321,7 +322,7 @@ extension ContentView {
         }
     }
     
-    func unzipIPA(_ inputFile: String) {
+    func unzipIPA(_ fileURL: URL) {
         //MARK: Create working temp folder
         var tempFolder: String! = nil
         if let tmpFolder = makeTempFolder() {
@@ -333,37 +334,103 @@ extension ContentView {
         let payloadDirectory = workingDirectory.stringByAppendingPathComponent("Payload/")
         
         do {
-            let appBundleURL = try fileManager.unzipAppBundle(at: URL.init(fileURLWithPath: inputFile), toDirectory: URL.init(fileURLWithPath: payloadDirectory))
+            let appBundleURL = try fileManager.unzipAppBundle(at: URL.init(fileURLWithPath: fileURL.path), toDirectory: URL.init(fileURLWithPath: payloadDirectory))
             setStatus("Extracting ipa file: \(appBundleURL.absoluteString)")
-            if let application = ALTApplication.init(fileURL: appBundleURL) {
-                self.signingOptions.app = application
-                self.signingOptions.appVersion = application.version
-                self.signingOptions.appDisplayName = application.name
-                self.signingOptions.appBundleId = application.bundleIdentifier
-                self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
-            } else {
-                setStatus("Invalid ipa file")
-                cleanup(tempFolder); return
-            }
-            self.signingOptions.app = ALTApplication.init(fileURL: appBundleURL)
-            
+            importAppBundle(appBundleURL)
         } catch {
             setStatus("Error extracting ipa file")
             cleanup(tempFolder); return
         }
     }
     
+    func importAppBundle(_ fileURL: URL) {
+        if let application = ALTApplication.init(fileURL: fileURL) {
+            self.signingOptions.app = application
+            self.signingOptions.appVersion = application.version
+            self.signingOptions.appDisplayName = application.name
+            self.signingOptions.appBundleId = application.bundleIdentifier
+            self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
+            fileManager.setFilePosixPermissions(application.fileURL)
+        } else {
+            setStatus("Invalid File")
+        }
+    }
+    
     func startSigning() {
+        
         if let app = self.signingOptions.app, let cert = self.signingOptions.signingCert, let profile = self.signingOptions.signingProfile {
-            AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
-                self.setStatus(log)
-            } completionHandler: { success, error, ipaURL in
-                if success {
-                    self.setStatus("签名成功：\(ipaURL?.absoluteString)")
-                } else {
-                    self.setStatus("签名失败：\(error.debugDescription)")
+            let infoPlistURL = app.fileURL.appendingPathComponent("Info.plist")
+            if let dictionary = NSMutableDictionary.init(contentsOf: infoPlistURL) {
+                print("Info.plist: \(dictionary)")
+                
+                //MARK: Get output filename
+                let saveDialog = NSSavePanel()
+                saveDialog.allowedFileTypes = ["ipa"]
+                saveDialog.nameFieldStringValue = "\(signingOptions.appDisplayName)_\(signingOptions.appBundleId)_\(signingOptions.appVersion).ipa"
+                if saveDialog.runModal().rawValue == NSApplication.ModalResponse.OK.rawValue  {
+                    if let outputFileURL = saveDialog.url {
+                        if self.signingOptions.appDisplayName != app.name {
+                            let _ = setPlistKey(infoPlistURL.path, keyName: "CFBundleDisplayName", value: self.signingOptions.appDisplayName)
+                            setAppName(self.signingOptions.appDisplayName, fileURL: app.fileURL)
+                        }
+                        
+                        if self.signingOptions.appBundleId != app.bundleIdentifier {
+                            let _ = setPlistKey(infoPlistURL.path, keyName: "CFBundleIdentifier", value: self.signingOptions.appBundleId)
+                        }
+                        
+                        if self.signingOptions.appVersion != app.version {
+                            let _ = setPlistKey(infoPlistURL.path, keyName: "CFBundleShortVersionString", value: self.signingOptions.appVersion)
+                        }
+                        
+                        var removeFilesURLs: [URL] = []
+
+                        if self.signingOptions.deleteWatch {
+                            let watchURL = app.fileURL.appendingPathComponent("Watch")
+                            removeFilesURLs.append(watchURL)
+                            
+                            let watchPlaceholderURL = app.fileURL.appendingPathComponent("com.apple.WatchPlaceholder")
+                            removeFilesURLs.append(watchPlaceholderURL)
+                        }
+                        
+                        if self.signingOptions.deletePluglnsfolder {
+                            let plugInsURL = app.fileURL.appendingPathComponent("PlugIns")
+                            removeFilesURLs.append(plugInsURL)
+                        }
+                        
+                        for removeURL in removeFilesURLs {
+                            if fileManager.fileExists(atPath: removeURL.path) {
+                                do {
+                                    try fileManager.removeItem(at: removeURL)
+                                    print("删除成功：\(removeURL.absoluteString)")
+                                } catch let error {
+                                    print("删除失败：\(removeURL.absoluteString)\(error.localizedDescription)")
+                                }
+                            }
+                        }
+                        
+                        AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
+                            self.setStatus(log)
+                        } completionHandler: { success, error, ipaURL in
+                            if success {
+                                self.setStatus("签名成功")
+                                if let ipaURL = ipaURL {
+                                    do {
+                                        try fileManager.moveItem(at: ipaURL, to: outputFileURL)
+                                    } catch let error {
+                                        print(error.localizedDescription)
+                                    }
+                                }
+                            } else {
+                                self.setStatus("签名失败：\(error.debugDescription)")
+                            }
+                        }
+                    }
                 }
+            } else {
+                self.alertMessage = "无法读取Info.plist"
+                self.showingAlert = true
             }
+            
         } else {
             if self.signingOptions.app == nil {
                 self.alertMessage = "请导入IPA"
@@ -377,6 +444,7 @@ extension ContentView {
             }
                         
         }
+      
     }
     
     
@@ -394,6 +462,41 @@ extension ContentView {
     
     func zip(_ inputPath: String, outputFile: String) -> AppSignerTaskOutput {
         return Process().execute(zipPath, workingDirectory: inputPath, arguments: ["-qry", outputFile, "."])
+    }
+
+    
+    func getPlistKey(_ plist: String, keyName: String)->String? {
+        let currTask = Process().execute(defaultsPath, workingDirectory: nil, arguments: ["read", plist, keyName])
+        if currTask.status == 0 {
+            return String(currTask.output.dropLast())
+        } else {
+            return nil
+        }
+    }
+    
+    func setPlistKey(_ plist: String, keyName: String, value: String)->AppSignerTaskOutput {
+        return Process().execute(defaultsPath, workingDirectory: nil, arguments: ["write", plist, keyName, value])
+    }
+    
+    func setAppName(_ appName: String, fileURL: URL) {
+        do {
+            let dirArray = try fileManager.contentsOfDirectory(atPath: fileURL.path)
+            for subFilePath in dirArray {
+                if subFilePath.hasSuffix(".lproj") {
+                    let subFileURL: URL = fileURL.appendingPathComponent(subFilePath)
+                    let infoPlistStringsURL = subFileURL.appendingPathComponent("InfoPlist.strings")
+                    if fileManager.fileExists(atPath: infoPlistStringsURL.path) {
+                        if let dictionary = NSMutableDictionary.init(contentsOf: infoPlistStringsURL) {
+                            dictionary.setObject(appName, forKey: "CFBundleDisplayName" as NSCopying)
+                            dictionary.write(toFile: infoPlistStringsURL.path, atomically: true)
+                            print("修改AppName:\(infoPlistStringsURL.path)")
+                        }
+                    }
+                }
+            }
+        } catch let error {
+            print(error.localizedDescription)
+        }
     }
     
     func cleanup(_ tempFolder: String){

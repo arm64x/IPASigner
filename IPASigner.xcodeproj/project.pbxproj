@@ -259,8 +259,6 @@
 			children = (
 				165C9E3D2834AF6D00AC6D35 /* IPASignerApp.swift */,
 				165C9E3F2834AF6D00AC6D35 /* ContentView.swift */,
-				16932F0A283797890030C319 /* SigningOptions.swift */,
-				165C9E4C2835D31300AC6D35 /* NSTask-execute.swift */,
 				165C9EEA2835E4D900AC6D35 /* IPASigner-Bridging-Header.h */,
 				165C9EE22835E1EF00AC6D35 /* Utils */,
 				165C9E412834AF6F00AC6D35 /* Assets.xcassets */,
@@ -446,6 +444,8 @@
 		165C9EE22835E1EF00AC6D35 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				16932F0A283797890030C319 /* SigningOptions.swift */,
+				165C9E4C2835D31300AC6D35 /* NSTask-execute.swift */,
 				165C9F15283644AA00AC6D35 /* AppDefaults.swift */,
 				165C9E502835D9E000AC6D35 /* StringByAppendingPathComponent.swift */,
 				165C9E4E2835D8D800AC6D35 /* Log.swift */,

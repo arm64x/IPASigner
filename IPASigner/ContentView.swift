@@ -11,6 +11,7 @@ import SwiftUIX
 struct ContentView: View {
     
     @State private var signingOptions: SigningOptions = SigningOptions()
+    @State private var controlsDisable = false
     @State private var showingAlert = false
     @State private var alertTitle: String = "提示"
     @State private var alertMessage: String = ""
@@ -26,6 +27,8 @@ struct ContentView: View {
     let codesignPath = "/usr/bin/codesign"
     let securityPath = "/usr/bin/security"
     let chmodPath = "/bin/chmod"
+    
+    @State var lastMakedTempFolder: String?
         
     enum ImportResourceType {
         case Cert
@@ -34,6 +37,7 @@ struct ContentView: View {
     }
 
     var body: some View {
+        
         DispatchQueue.main.async {
             if let p12Data = AppDefaults.shared.signingCertificate {
                 self.signingOptions.signingCert = ALTCertificate.init(p12Data: p12Data, password: AppDefaults.shared.signingCertificatePassword)
@@ -59,14 +63,16 @@ struct ContentView: View {
                     text: $signingOptions.ipaPath
                 )
                 .frame(width: 500, height: 30, alignment: .center)
+                .disabled(controlsDisable)
                 
                 Button {
                     doBrowse(resourceType: .IPA)
                 } label: {
                     Text("Browse")
                 }
-//                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+
             }.padding(.top, 20)
             
             HStack {
@@ -81,7 +87,7 @@ struct ContentView: View {
                     "Certificate File path",
                     text: $signingOptions.cert
                 )
-                .disabled(true)
+                .allowsHitTesting(false)
                 .frame(width: 500, height: 30, alignment: .center)
                                 
                 Button {
@@ -89,8 +95,9 @@ struct ContentView: View {
                 } label: {
                     Text("Browse")
                 }
-//                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+
             }
             
             HStack {
@@ -106,15 +113,16 @@ struct ContentView: View {
                     text: $signingOptions.profile
                 )
                 .frame(width: 500, height: 30, alignment: .center)
-                .disabled(true)
+                .allowsHitTesting(false)
                 
                 Button {
                     doBrowse(resourceType: .Profile)
                 } label: {
                     Text("Browse")
                 }
-//                .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+
             }
             
             HStack {
@@ -130,6 +138,8 @@ struct ContentView: View {
                     text: $signingOptions.appDisplayName
                 )
                 .frame(width: 500, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+                
             }
             
             HStack {
@@ -145,10 +155,14 @@ struct ContentView: View {
                     text: $signingOptions.appBundleId
                 )
                 .frame(width: 400, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+
                 
                 Toggle(isOn: $signingOptions.deleteWatch) {
                     Text("Delete Watch")
                 }
+                .disabled(controlsDisable)
+
                 
             }
             
@@ -165,16 +179,20 @@ struct ContentView: View {
                     text: $signingOptions.appVersion
                 )
                 .frame(width: 400, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+
                 
                 
                 Toggle(isOn: $signingOptions.deletePluglnsfolder) {
                     Text("Delete Pluglns Folder")
                 }
+                .disabled(controlsDisable)
+
                 
             }
             
             HStack {
-                Text("Minimum iOS Version：")
+                Text("Minimum Version：")
                     .font(.body)
                     .foregroundColor(.black)
                     .multilineTextAlignment(.center)
@@ -185,12 +203,14 @@ struct ContentView: View {
                     "This changes the app minimum iOS version",
                     text: $signingOptions.appMinimumiOSVersion
                 )
-                .disabled(true)
+                .allowsHitTesting(false)
                 .frame(width: 400, height: 30, alignment: .center)
                 
                 Toggle(isOn: $signingOptions.removeMinimumiOSVersion) {
                     Text("Remove Minimum Version")
                 }
+                .disabled(controlsDisable)
+
      
             }
             
@@ -204,7 +224,7 @@ struct ContentView: View {
                 
                 TextEditor(text: $stateString)
                     .frame(width: 500, height: 40)
-                    .disabled(true)
+                    .allowsHitTesting(false)
                 
                 Button {
                     startSigning()
@@ -213,6 +233,8 @@ struct ContentView: View {
                 }
                 .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+
             }
             
         }
@@ -331,12 +353,15 @@ extension ContentView {
         } else {
             return
         }
+        
+        lastMakedTempFolder = tempFolder
+    
         let workingDirectory = tempFolder.stringByAppendingPathComponent("out")
         let payloadDirectory = workingDirectory.stringByAppendingPathComponent("Payload/")
-        
+    
         do {
             let appBundleURL = try fileManager.unzipAppBundle(at: URL.init(fileURLWithPath: fileURL.path), toDirectory: URL.init(fileURLWithPath: payloadDirectory))
-            setStatus("Extracting ipa file: \(appBundleURL.absoluteString)")
+            setStatus("Extracting ipa file: \(appBundleURL.path)")
             importAppBundle(appBundleURL)
         } catch {
             setStatus("Error extracting ipa file")
@@ -363,24 +388,34 @@ extension ContentView {
             let infoPlistURL = app.fileURL.appendingPathComponent("Info.plist")
             if let dictionary = NSMutableDictionary.init(contentsOf: infoPlistURL) {
                 print("Info.plist: \(dictionary)")
-                
                 //MARK: Get output filename
                 let saveDialog = NSSavePanel()
                 saveDialog.allowedFileTypes = ["ipa"]
-                saveDialog.nameFieldStringValue = "\(signingOptions.appDisplayName)_\(signingOptions.appBundleId)_\(signingOptions.appVersion).ipa"
+                saveDialog.nameFieldStringValue = "\(signingOptions.appDisplayName)_\(signingOptions.appVersion)_\(signingOptions.appBundleId).ipa"
                 if saveDialog.runModal().rawValue == NSApplication.ModalResponse.OK.rawValue  {
                     if let outputFileURL = saveDialog.url {
+                        
+                        self.controlsDisable = true
+                        
                         if self.signingOptions.appDisplayName != app.name {
+                            setStatus("修改\(app.name)的名字：\(self.signingOptions.appDisplayName)")
                             let _ = setPlistKey(infoPlistURL.path, keyName: "CFBundleDisplayName", value: self.signingOptions.appDisplayName)
                             setAppName(self.signingOptions.appDisplayName, fileURL: app.fileURL)
                         }
                         
                         if self.signingOptions.appBundleId != app.bundleIdentifier {
+                            setStatus("修改\(app.name)的AppID：\(self.signingOptions.appBundleId)")
                             let _ = setPlistKey(infoPlistURL.path, keyName: "CFBundleIdentifier", value: self.signingOptions.appBundleId)
                         }
                         
                         if self.signingOptions.appVersion != app.version {
+                            setStatus("修改\(app.name)的版本：\(self.signingOptions.appVersion)")
                             let _ = setPlistKey(infoPlistURL.path, keyName: "CFBundleShortVersionString", value: self.signingOptions.appVersion)
+                        }
+                        
+                        if self.signingOptions.removeMinimumiOSVersion {
+                            setStatus("移除\(app.name)的最低系统版本限制")
+                            let _ = setPlistKey(infoPlistURL.path, keyName: "MinimumOSVersion", value: "1.0")
                         }
                         
                         var removeFilesURLs: [URL] = []
@@ -402,9 +437,9 @@ extension ContentView {
                             if fileManager.fileExists(atPath: removeURL.path) {
                                 do {
                                     try fileManager.removeItem(at: removeURL)
-                                    print("删除成功：\(removeURL.absoluteString)")
+                                    setStatus("删除：\(removeURL.path)")
                                 } catch let error {
-                                    print("删除失败：\(removeURL.absoluteString)\(error.localizedDescription)")
+                                    setStatus("删除失败：\(removeURL.path)\(error.localizedDescription)")
                                 }
                             }
                         }
@@ -412,17 +447,35 @@ extension ContentView {
                         AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
                             self.setStatus(log)
                         } completionHandler: { success, error, ipaURL in
+                            self.controlsDisable = false
                             if success {
-                                self.setStatus("签名成功")
                                 if let ipaURL = ipaURL {
+                                    
+                                    if fileManager.fileExists(atPath: outputFileURL.path) {
+                                        do {
+                                            try fileManager.removeItem(at: outputFileURL)
+                                            setStatus("删除：\(outputFileURL.path)")
+                                        } catch let error {
+                                            setStatus("删除失败：\(outputFileURL.path)\(error.localizedDescription)")
+                                        }
+                                    }
+                                    
                                     do {
                                         try fileManager.moveItem(at: ipaURL, to: outputFileURL)
+                                        self.setStatus("签名成功，保存在\(outputFileURL.path)")
                                     } catch let error {
                                         print(error.localizedDescription)
+                                        self.setStatus("签名成功，保存失败，保存于\(ipaURL.path)")
+                                    }
+                                    if let tempFolder = self.lastMakedTempFolder {
+                                        cleanup(tempFolder)
                                     }
                                 }
                             } else {
                                 self.setStatus("签名失败：\(error.debugDescription)")
+                                if let tempFolder = self.lastMakedTempFolder {
+                                    cleanup(tempFolder)
+                                }
                             }
                         }
                     }
@@ -431,7 +484,6 @@ extension ContentView {
                 self.alertMessage = "无法读取Info.plist"
                 self.showingAlert = true
             }
-            
         } else {
             if self.signingOptions.app == nil {
                 self.alertMessage = "请导入IPA"
@@ -445,7 +497,6 @@ extension ContentView {
             }
                         
         }
-      
     }
     
     

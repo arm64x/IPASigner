@@ -17,7 +17,7 @@ class Log {
     static var logName = Log.tempDirectory.stringByAppendingPathComponent("\(Log.bundleID!)-\(Date().timeIntervalSince1970).log")
     
     @objc
-    static func write(_ value:String) {
+    static func write(_ value: String) {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         if let outputStream = OutputStream(toFileAtPath: logName, append: true) {

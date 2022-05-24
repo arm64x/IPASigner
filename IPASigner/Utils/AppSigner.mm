@@ -223,12 +223,6 @@ std::string CertificatesContent(ALTCertificate *altCertificate)
     
     NSString *cachePath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory,NSUserDomainMask, YES) objectAtIndex:0];
     
-    BOOL useZSign = YES;
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"kUseAltSign"]) {
-        useZSign = NO;
-    }
-    
-    logHandler(@"=============== 签名进度 ===============");
     logHandler(@"正在签名...");
 
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -237,7 +231,6 @@ std::string CertificatesContent(ALTCertificate *altCertificate)
         [[NSFileManager defaultManager] createFileAtPath:certPath contents:[certificate encryptedP12DataWithPassword:pwd] attributes:nil];
         NSString *provPath = [cachePath stringByAppendingPathComponent:@"signProfile.mobileprovision"];
         [[NSFileManager defaultManager] createFileAtPath:provPath contents:profile.data attributes:nil];
-        
         char *p12 = (char *)[certPath UTF8String];
         char *password = (char *)[pwd?:@"" UTF8String];
         char *prov = (char *)[provPath UTF8String];

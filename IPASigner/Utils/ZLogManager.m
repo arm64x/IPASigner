@@ -32,7 +32,6 @@ static ZLogManager *manager = nil;
 
 - (void)printLog:(char *)log {
     NSString *logString = [NSString stringWithUTF8String:log];
-    NSLog(@"ZLogManager printLog: %@",logString);
     if (self.block) {
         self.block(logString);
     }
@@ -40,7 +39,6 @@ static ZLogManager *manager = nil;
 
 - (void)printZipLog:(NSString *)log {
     NSString *logString = [NSString stringWithFormat:@">>> %@",log];
-    NSLog(@"ZLogManager printZipLog: %@",logString);
     if (self.block) {
         self.block(logString);
     }

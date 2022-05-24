@@ -8,7 +8,7 @@
 
 #import "NSFileManager+Zip.h"
 #import "NSError+ALTErrors.h"
-//#import "ZLogManager.h"
+#import "ZLogManager.h"
 
 #include "zip.h"
 #include "unzip.h"
@@ -349,9 +349,10 @@ char ALTDirectoryDeliminator = '/';
     
     BOOL success = YES;
     
+    
     for (NSURL *fileURL in enumerator)
     {
-//        [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving: %@ -> %@",fileURL.lastPathComponent, ipaName]];
+        [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving %0.02f%%: %@ -> %@", (float)progress.completedUnitCount/(float)progress.totalUnitCount*100, fileURL.lastPathComponent, ipaName]];
         
         NSNumber *isDirectory = nil;
         if (![fileURL getResourceValue:&isDirectory forKey:NSURLIsDirectoryKey error:error])
@@ -371,7 +372,7 @@ char ALTDirectoryDeliminator = '/';
     
     if (success)
     {
-//        [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving: %@ -> %@",payloadDirectory.lastPathComponent, ipaName]];
+        [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving %0.02f%%: %@ -> %@", (float)progress.completedUnitCount/(float)progress.totalUnitCount*100, payloadDirectory.lastPathComponent, ipaName]];
         
         if (![self writeItemAtURL:payloadDirectory toZipFile:&zipFile depth:1 relativeURL:nil isDirectory:YES error:error])
         {
@@ -380,7 +381,7 @@ char ALTDirectoryDeliminator = '/';
         
         progress.completedUnitCount += 1;
 
-//        [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving: %@ -> %@",appBundleDirectory.lastPathComponent, ipaName]];
+        [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving %0.02f%%: %@ -> %@", (float)progress.completedUnitCount/(float)progress.totalUnitCount*100, appBundleDirectory.lastPathComponent, ipaName]];
         if (![self writeItemAtURL:appBundleDirectory toZipFile:&zipFile depth:2 relativeURL:nil isDirectory:YES error:error])
         {
             success = NO;
@@ -388,7 +389,7 @@ char ALTDirectoryDeliminator = '/';
         
         progress.completedUnitCount += 1;
     }
-//    [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving %@ -> 100%%", ipaName]];
+    [[ZLogManager shareManager] printZipLog:[NSString stringWithFormat:@"Archiving Completed %@ -> 100%%", ipaName]];
 
     
     zipClose(zipFile, NULL);

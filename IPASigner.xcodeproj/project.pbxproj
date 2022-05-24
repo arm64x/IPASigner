@@ -39,7 +39,6 @@
 		165C9F0F2835F05400AC6D35 /* ZLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F0D2835F05400AC6D35 /* ZLogManager.m */; };
 		165C9F122836047400AC6D35 /* AppSigner.mm in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F102836047400AC6D35 /* AppSigner.mm */; };
 		165C9F16283644AA00AC6D35 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F15283644AA00AC6D35 /* AppDefaults.swift */; };
-		166DCB43283C67E2000C2D66 /* SwiftUIX in Frameworks */ = {isa = PBXBuildFile; productRef = 166DCB42283C67E2000C2D66 /* SwiftUIX */; };
 		16932F0B283797890030C319 /* SigningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16932F0A283797890030C319 /* SigningOptions.swift */; };
 		88A68B8FEE043C9A70D56B03 /* Pods_IPASigner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */; };
 /* End PBXBuildFile section */
@@ -221,7 +220,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				88A68B8FEE043C9A70D56B03 /* Pods_IPASigner.framework in Frameworks */,
-				166DCB43283C67E2000C2D66 /* SwiftUIX in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -525,7 +523,6 @@
 			);
 			name = IPASigner;
 			packageProductDependencies = (
-				166DCB42283C67E2000C2D66 /* SwiftUIX */,
 			);
 			productName = IPASigner;
 			productReference = 165C9E3A2834AF6D00AC6D35 /* IPASigner.app */;
@@ -556,7 +553,6 @@
 			);
 			mainGroup = 165C9E312834AF6D00AC6D35;
 			packageReferences = (
-				166DCB41283C67E2000C2D66 /* XCRemoteSwiftPackageReference "SwiftUIX" */,
 			);
 			productRefGroup = 165C9E3B2834AF6D00AC6D35 /* Products */;
 			projectDirPath = "";
@@ -858,25 +854,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		166DCB41283C67E2000C2D66 /* XCRemoteSwiftPackageReference "SwiftUIX" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SwiftUIX/SwiftUIX";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.2;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		166DCB42283C67E2000C2D66 /* SwiftUIX */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 166DCB41283C67E2000C2D66 /* XCRemoteSwiftPackageReference "SwiftUIX" */;
-			productName = SwiftUIX;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 165C9E322834AF6D00AC6D35 /* Project object */;
 }

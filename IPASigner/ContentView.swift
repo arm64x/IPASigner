@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
-import SwiftUIX
+import Cocoa
 
 struct ContentView: View {
     
+    @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     @State private var signingOptions: SigningOptions = SigningOptions()
     @State private var controlsDisable = false
     @State private var showingAlert = false
@@ -29,13 +31,13 @@ struct ContentView: View {
     let chmodPath = "/bin/chmod"
     
     @State var lastMakedTempFolder: String?
-        
+    
     enum ImportResourceType {
         case Cert
         case Profile
         case IPA
     }
-
+    
     var body: some View {
         
         DispatchQueue.main.async {
@@ -48,7 +50,7 @@ struct ContentView: View {
                 self.signingOptions.profile = self.signingOptions.signingProfile == nil ? "" : self.signingOptions.signingProfile!.name
             }
         }
-
+        
         return VStack(alignment: .leading, spacing: 5) {
             HStack {
                 Text("IPA File：")
@@ -59,12 +61,12 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                    "IPA File path",
+                    "Import IPA File",
                     text: $signingOptions.ipaPath
                 )
                 .frame(width: 500, height: 30, alignment: .center)
-                .disabled(controlsDisable)
-                
+                .allowsHitTesting(false)
+                        
                 Button {
                     doBrowse(resourceType: .IPA)
                 } label: {
@@ -72,7 +74,7 @@ struct ContentView: View {
                 }
                 .frame(width: 80, height: 30, alignment: .center)
                 .disabled(controlsDisable)
-
+                
             }.padding(.top, 20)
             
             HStack {
@@ -84,12 +86,12 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                    "Certificate File path",
+                    "Import Certificate File",
                     text: $signingOptions.cert
                 )
                 .allowsHitTesting(false)
                 .frame(width: 500, height: 30, alignment: .center)
-                                
+                
                 Button {
                     doBrowse(resourceType: .Cert)
                 } label: {
@@ -97,7 +99,6 @@ struct ContentView: View {
                 }
                 .frame(width: 80, height: 30, alignment: .center)
                 .disabled(controlsDisable)
-
             }
             
             HStack {
@@ -109,7 +110,7 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                    "ProvisioningProfile File path",
+                    "Import ProvisioningProfile File",
                     text: $signingOptions.profile
                 )
                 .frame(width: 500, height: 30, alignment: .center)
@@ -122,7 +123,7 @@ struct ContentView: View {
                 }
                 .frame(width: 80, height: 30, alignment: .center)
                 .disabled(controlsDisable)
-
+                
             }
             
             HStack {
@@ -156,13 +157,13 @@ struct ContentView: View {
                 )
                 .frame(width: 400, height: 30, alignment: .center)
                 .disabled(controlsDisable)
-
+                
                 
                 Toggle(isOn: $signingOptions.deleteWatch) {
                     Text("Delete Watch")
                 }
                 .disabled(controlsDisable)
-
+                
                 
             }
             
@@ -181,14 +182,10 @@ struct ContentView: View {
                 .frame(width: 400, height: 30, alignment: .center)
                 .disabled(controlsDisable)
 
-                
-                
                 Toggle(isOn: $signingOptions.deletePluglnsfolder) {
                     Text("Delete Pluglns Folder")
                 }
                 .disabled(controlsDisable)
-
-                
             }
             
             HStack {
@@ -210,8 +207,8 @@ struct ContentView: View {
                     Text("Remove Minimum Version")
                 }
                 .disabled(controlsDisable)
-
-     
+                
+                
             }
             
             HStack {
@@ -234,15 +231,14 @@ struct ContentView: View {
                 .foregroundColor(.blue)
                 .frame(width: 80, height: 30, alignment: .center)
                 .disabled(controlsDisable)
-
+                
             }
             
         }
-        .frame(width:750, height: 400, alignment: .top)
+        .frame(width:750, height: 350, alignment: .top)
         .alert(isPresented: $showingAlert) {
             getAlert()
         }
-     
     }
     
     func getAlert() -> Alert {
@@ -274,19 +270,32 @@ extension ContentView {
                     case .Cert:
                         if url.pathExtension.lowercased() == "p12" {
                             if let data: Data = NSData.init(contentsOf: url) as Data? {
-                                if let inputCert = ALTCertificate.init(p12Data: data, password: "123") {
-                                    AppDefaults.shared.reset()
-                                    self.signingOptions.signingProfile = nil
-                                    self.signingOptions.signingCert = inputCert
-                                    self.signingOptions.cert = inputCert.name
-                                    self.signingOptions.profile = ""
-                                    AppDefaults.shared.signingCertificate = data
-                                    AppDefaults.shared.signingCertificatePassword = "123"
-                                    AppDefaults.shared.signingCertificateName = inputCert.name
-                                    AppDefaults.shared.signingCertificateSerialNumber = inputCert.serialNumber
-                                } else {
-                                    self.alertMessage = "证书无效或密码错误"
-                                    self.showingAlert = true
+                                let alert = NSAlert()
+                                alert.messageText = "请输入证书密码"
+                                alert.addButton(withTitle: "确定")
+                                alert.addButton(withTitle: "取消")
+                                let inputTextField = NSTextField(frame: NSRect(x: 0, y: 0, width: 300, height: 24))
+                                inputTextField.placeholderString = "证书密码"
+                                alert.accessoryView = inputTextField
+                                if let firstWindow = NSApplication.shared.windows.first {
+                                    alert.beginSheetModal(for: firstWindow) { returnCode in
+                                        if returnCode == .init(rawValue: 1000) {
+                                            if let inputCert = ALTCertificate.init(p12Data: data, password: inputTextField.stringValue) {
+                                                AppDefaults.shared.reset()
+                                                self.signingOptions.signingProfile = nil
+                                                self.signingOptions.signingCert = inputCert
+                                                self.signingOptions.cert = inputCert.name
+                                                self.signingOptions.profile = ""
+                                                AppDefaults.shared.signingCertificate = data
+                                                AppDefaults.shared.signingCertificatePassword = inputTextField.stringValue
+                                                AppDefaults.shared.signingCertificateName = inputCert.name
+                                                AppDefaults.shared.signingCertificateSerialNumber = inputCert.serialNumber
+                                            } else {
+                                                self.alertMessage = "证书无效或密码错误"
+                                                self.showingAlert = true
+                                            }
+                                        }
+                                    }
                                 }
                             } else {
                                 self.alertMessage = "证书无效"
@@ -323,7 +332,7 @@ extension ContentView {
                                 self.alertMessage = "请先导入p12证书再导入mobileprovision"
                                 self.showingAlert = true
                             }
-                          
+                            
                         } else {
                             self.alertMessage = "请选择mobileprovision"
                             self.showingAlert = true
@@ -355,10 +364,10 @@ extension ContentView {
         }
         
         lastMakedTempFolder = tempFolder
-    
+        
         let workingDirectory = tempFolder.stringByAppendingPathComponent("out")
         let payloadDirectory = workingDirectory.stringByAppendingPathComponent("Payload/")
-    
+        
         do {
             let appBundleURL = try fileManager.unzipAppBundle(at: URL.init(fileURLWithPath: fileURL.path), toDirectory: URL.init(fileURLWithPath: payloadDirectory))
             setStatus("Extracting ipa file: \(appBundleURL.path)")
@@ -383,7 +392,6 @@ extension ContentView {
     }
     
     func startSigning() {
-        
         if let app = self.signingOptions.app, let cert = self.signingOptions.signingCert, let profile = self.signingOptions.signingProfile {
             let infoPlistURL = app.fileURL.appendingPathComponent("Info.plist")
             if let dictionary = NSMutableDictionary.init(contentsOf: infoPlistURL) {
@@ -419,7 +427,7 @@ extension ContentView {
                         }
                         
                         var removeFilesURLs: [URL] = []
-
+                        
                         if self.signingOptions.deleteWatch {
                             let watchURL = app.fileURL.appendingPathComponent("Watch")
                             removeFilesURLs.append(watchURL)
@@ -495,7 +503,7 @@ extension ContentView {
                 self.alertMessage = "请导入描述文件"
                 self.showingAlert = true
             }
-                        
+            
         }
     }
     
@@ -515,7 +523,7 @@ extension ContentView {
     func zip(_ inputPath: String, outputFile: String) -> AppSignerTaskOutput {
         return Process().execute(zipPath, workingDirectory: inputPath, arguments: ["-qry", outputFile, "."])
     }
-
+    
     
     func getPlistKey(_ plist: String, keyName: String)->String? {
         let currTask = Process().execute(defaultsPath, workingDirectory: nil, arguments: ["read", plist, keyName])
@@ -560,12 +568,10 @@ extension ContentView {
             Log.write(error.localizedDescription)
         }
     }
-        
+    
     func setStatus(_ status: String){
         stateString = status
         Log.write(status)
     }
-  
+    
 }
-
-

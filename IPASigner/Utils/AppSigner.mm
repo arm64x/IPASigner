@@ -7,7 +7,6 @@
 
 
 #import "AppSigner.h"
-
 #import "ALTProvisioningProfile.h"
 #import "ALTCertificate.h"
 #import "ALTProvisioningProfile.h"
@@ -203,7 +202,11 @@ std::string CertificatesContent(ALTCertificate *altCertificate)
     }
 }
 
-- (void)signAppWithAplication:(ALTApplication *)application certificate:(ALTCertificate *)certificate provisioningProfile:(ALTProvisioningProfile *)profile logHandler:(void (^)(NSString *log))logHandler completionHandler:(void (^)(BOOL success, NSError *error, NSURL *url))completionHandler {
+- (void)signAppWithAplication:(ALTApplication *)application
+                  certificate:(ALTCertificate *)certificate
+          provisioningProfile:(ALTProvisioningProfile *)profile
+                   logHandler:(void (^)(NSString *log))logHandler
+            completionHandler:(void (^)(BOOL success, NSError *error, NSURL *url))completionHandler {
     
     __block NSError *error = nil;
     NSURL *resignedIPAURL = nil;

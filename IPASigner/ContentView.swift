@@ -36,10 +36,11 @@ struct ContentView: View {
         case Cert
         case Profile
         case IPA
+        case Dylib
     }
     
     var body: some View {
-        
+
         DispatchQueue.main.async {
             if let p12Data = AppDefaults.shared.signingCertificate {
                 self.signingOptions.signingCert = ALTCertificate.init(p12Data: p12Data, password: AppDefaults.shared.signingCertificatePassword)
@@ -118,6 +119,31 @@ struct ContentView: View {
                 
                 Button {
                     doBrowse(resourceType: .Profile)
+                } label: {
+                    Text("Browse")
+                }
+                .frame(width: 80, height: 30, alignment: .center)
+                .disabled(controlsDisable)
+                
+            }
+            
+            HStack {
+                Text("Dylib/Deb File：")
+                    .font(.body)
+                    .foregroundColor(.black)
+                    .multilineTextAlignment(.leading)
+                    .frame(width: 140, height: 25, alignment: .topTrailing)
+                    .offset(x: 0, y: 5)
+                
+                TextField(
+                    "Import Dylib/Deb File",
+                    text: $signingOptions.dylibPath
+                )
+                .frame(width: 500, height: 30, alignment: .center)
+                .allowsHitTesting(false)
+                
+                Button {
+                    doBrowse(resourceType: .Dylib)
                 } label: {
                     Text("Browse")
                 }
@@ -233,9 +259,8 @@ struct ContentView: View {
                 .disabled(controlsDisable)
                 
             }
-            
         }
-        .frame(width:750, height: 350, alignment: .top)
+        .frame(width:750, height: 400, alignment: .top)
         .alert(isPresented: $showingAlert) {
             getAlert()
         }
@@ -345,10 +370,19 @@ extension ContentView {
                             self.signingOptions.ipaPath = url.path
                             self.importAppBundle(url)
                         } else {
-                            self.alertMessage = "请选择ipa或者app"
+                            self.alertMessage = "请选择ipa或者app文件"
                             self.showingAlert = true
                         }
-                    }
+                       
+                    case .Dylib:
+                        
+                        if url.pathExtension.lowercased() == "dylib" || url.pathExtension.lowercased() == "deb" {
+                            self.signingOptions.dylibPath = url.path
+                        } else {
+                            self.alertMessage = "请选择dylib或者deb文件"
+                            self.showingAlert = true
+                        }
+                    }                
                 }
             }
         }
@@ -450,6 +484,12 @@ extension ContentView {
                                     setStatus("删除失败：\(removeURL.path)\(error.localizedDescription)")
                                 }
                             }
+                        }
+                        
+                        let dylibPaths = NSMutableArray.init(object: self.signingOptions.dylibPath)
+                        if patch_ipa(app.fileURL.path, self.lastMakedTempFolder!, dylibPaths, false) != 1 {
+                            setStatus("插件注入失败:\(self.signingOptions.dylibPath.lastPathComponent)")
+                            return
                         }
                         
                         AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in

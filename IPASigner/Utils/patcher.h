@@ -8,6 +8,7 @@
 #ifndef patcher_h
 #define patcher_h
 
+#import "AppSigner.h"
 #import <Foundation/Foundation.h>
 #import <sys/ttycom.h>
 #import <sys/ioctl.h>
@@ -21,7 +22,6 @@
 #include "defines.h"
 #include "headers.h"
 #include "NSData+Reading.h"
-//#include <SSZipArchive/SSZipArchive.h>
 #include <STPrivilegedTask/STPrivilegedTask.h>
 
 #define fileExists(file) [[NSFileManager defaultManager] fileExistsAtPath:@(file)]
@@ -29,11 +29,8 @@
 #define IPAPATCHER_FAILURE -1
 #define EMPTY_STR @""
 
-#define DEBUG 0
-
-
+//#define DEBUG 0
 #define DEBUG_ON 1
-#define DEBUG_OFF 0
 
 #define ZIP_PATH @"/usr/bin/zip"
 #define CD_PATH @"/usr/bin/cd"
@@ -51,6 +48,6 @@ NSLog(@"ASSERT(%d:%s)@%s:%u[%s]\nError message: %@", saved_errno, #test, __FILEN
 } \
 while (false)
 
-int patch_ipa(NSString *ipa_path, NSMutableArray *dylib_or_deb, BOOL isDeb, BOOL commandLine, NSString *outPath);
+int patch_ipa(NSString *app_path, NSString *temp_path, NSMutableArray *dylib_or_deb, BOOL isDeb);
 
 #endif /* patcher_h */

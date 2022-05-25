@@ -52,7 +52,6 @@
 		165C9E3F2834AF6D00AC6D35 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		165C9E412834AF6F00AC6D35 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		165C9E442834AF6F00AC6D35 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		165C9E462834AF6F00AC6D35 /* IPASigner.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = IPASigner.entitlements; sourceTree = "<group>"; };
 		165C9E4C2835D31300AC6D35 /* NSTask-execute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSTask-execute.swift"; sourceTree = "<group>"; };
 		165C9E4E2835D8D800AC6D35 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
 		165C9E502835D9E000AC6D35 /* StringByAppendingPathComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringByAppendingPathComponent.swift; sourceTree = "<group>"; };
@@ -219,6 +218,7 @@
 		166DCB4E283E0E12000C2D66 /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
 		166DCB4F283E0E12000C2D66 /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
 		166DCB50283E0E12000C2D66 /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
+		166DCB56283E2822000C2D66 /* libsubstitute.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; path = libsubstitute.dylib; sourceTree = "<group>"; };
 		16932F0A283797890030C319 /* SigningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningOptions.swift; sourceTree = "<group>"; };
 		3815835F2C723BA87BC4E1B1 /* Pods-IPASigner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPASigner.release.xcconfig"; path = "Target Support Files/Pods-IPASigner/Pods-IPASigner.release.xcconfig"; sourceTree = "<group>"; };
 		41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IPASigner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -271,7 +271,7 @@
 				165C9EEA2835E4D900AC6D35 /* IPASigner-Bridging-Header.h */,
 				165C9EE22835E1EF00AC6D35 /* Utils */,
 				165C9E412834AF6F00AC6D35 /* Assets.xcassets */,
-				165C9E462834AF6F00AC6D35 /* IPASigner.entitlements */,
+				166DCB56283E2822000C2D66 /* libsubstitute.dylib */,
 				165C9E432834AF6F00AC6D35 /* Preview Content */,
 			);
 			path = IPASigner;
@@ -458,10 +458,10 @@
 				165C9F15283644AA00AC6D35 /* AppDefaults.swift */,
 				165C9E502835D9E000AC6D35 /* StringByAppendingPathComponent.swift */,
 				165C9E4E2835D8D800AC6D35 /* Log.swift */,
-				165C9F112836047400AC6D35 /* AppSigner.h */,
-				165C9F102836047400AC6D35 /* AppSigner.mm */,
 				165C9F0E2835F05400AC6D35 /* ZLogManager.h */,
 				165C9F0D2835F05400AC6D35 /* ZLogManager.m */,
+				165C9F112836047400AC6D35 /* AppSigner.h */,
+				165C9F102836047400AC6D35 /* AppSigner.mm */,
 				166DCB47283E0E07000C2D66 /* patcher.h */,
 				166DCB46283E0E07000C2D66 /* patcher.m */,
 				166DCB49283E0E12000C2D66 /* optool */,
@@ -816,14 +816,23 @@
 				DEVELOPMENT_TEAM = VTA4Y6H8RZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/IPASigner",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/IPASigner",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.IPASigner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -846,14 +855,23 @@
 				DEVELOPMENT_TEAM = VTA4Y6H8RZ;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/IPASigner",
+				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/IPASigner",
+				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				MARKETING_VERSION = 1.0;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.IPASigner;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

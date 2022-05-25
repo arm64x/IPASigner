@@ -12,6 +12,7 @@ struct SigningOptions {
     var ipaPath: String = ""
     var cert: String = ""
     var profile: String = ""
+    var dylibPath: String = ""
     var appBundleId: String = ""
     var appDisplayName: String = ""
     var appVersion: String = ""

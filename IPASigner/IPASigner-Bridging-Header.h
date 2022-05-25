@@ -30,3 +30,6 @@
 
 #import "ZLogManager.h"
 #import "AppSigner.h"
+
+
+#import "patcher.h"

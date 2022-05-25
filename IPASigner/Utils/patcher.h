@@ -22,7 +22,6 @@
 #include "defines.h"
 #include "headers.h"
 #include "NSData+Reading.h"
-#include <STPrivilegedTask/STPrivilegedTask.h>
 
 #define fileExists(file) [[NSFileManager defaultManager] fileExistsAtPath:@(file)]
 #define IPAPATCHER_SUCCESS 1
@@ -32,11 +31,6 @@
 //#define DEBUG 0
 #define DEBUG_ON 1
 
-#define ZIP_PATH @"/usr/bin/zip"
-#define CD_PATH @"/usr/bin/cd"
-#define BASH_PATH @"/bin/bash"
-#define BREW_PATH @"/usr/local/bin/brew"
-#define DPKG_PATH @"/usr/local/bin/dpkg-deb"
 #define CP_PATH @"/bin/cp"
 #define INSTALL_NAME_TOOL_PATH @"/usr/bin/install_name_tool"
 
@@ -48,6 +42,5 @@ NSLog(@"ASSERT(%d:%s)@%s:%u[%s]\nError message: %@", saved_errno, #test, __FILEN
 } \
 while (false)
 
-int patch_ipa(NSString *app_path, NSString *temp_path, NSMutableArray *dylib_or_deb, BOOL isDeb);
-
+int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb);
 #endif /* patcher_h */

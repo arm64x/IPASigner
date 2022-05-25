@@ -6,24 +6,10 @@
 //
 
 #import "patcher.h"
+#import "ZLogManager.h"
 
 static NSString *const NameKey = @"CFBundleName";
 
-
-void Msg(NSString *message, BOOL error){
-//    NSAlert *alert = [[NSAlert alloc] init];
-//    if(error){
-//        [alert setMessageText:@"Error"];
-//        [alert setInformativeText:message];
-//        [alert addButtonWithTitle:@"Ok"];
-//        [alert runModal];
-//    } else {
-//        [alert setMessageText:@"Notice"];
-//        [alert setInformativeText:message];
-//        [alert addButtonWithTitle:@"Ok"];
-//        [alert runModal];
-//    }
-}
 
 BOOL folderExists(NSString *folder){
     BOOL isDirectory;
@@ -93,7 +79,7 @@ int patch_binary(NSString *app_binary, NSString* dylib_path){
     return IPAPATCHER_SUCCESS;
 }
 
-int patch_ipa(NSString *app_path, NSString *temp_path, NSMutableArray *dylib_or_deb, BOOL isDeb){
+int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb) {
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -109,7 +95,7 @@ int patch_ipa(NSString *app_path, NSString *temp_path, NSMutableArray *dylib_or_
         app_binary = [resultDictionary objectForKey:NameKey];
     } else {
         dispatch_async(dispatch_get_main_queue(), ^{
-            Msg(@"Failed to plist data.", true);
+            [[ZLogManager shareManager] printLogStr:@"Failed to plist data."];
         });
         return IPAPATCHER_FAILURE;
     }
@@ -122,94 +108,7 @@ int patch_ipa(NSString *app_path, NSString *temp_path, NSMutableArray *dylib_or_
     if(DEBUG == DEBUG_ON) {
         NSLog(@"Full app path: %@", app_binary);
     }
-    
-    NSArray *DylibPathFinder;
-    
-    if(isDeb){
-        if(!fileExists([BREW_PATH UTF8String])){
-            NSTask *command = [[NSTask alloc] init];
-            command.launchPath = BASH_PATH;
-            command.arguments = @[@"-c", @"\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)\""];
-            [command launch];
-            [command waitUntilExit];
-        }
         
-        if(!fileExists([DPKG_PATH UTF8String])){
-            NSTask *command = [[NSTask alloc] init];
-            command.launchPath = BREW_PATH;
-            command.arguments = @[@"install", @"dpkg"];
-            [command launch];
-            [command waitUntilExit];
-        }
-        
-        if(DEBUG == DEBUG_ON){
-            NSLog(@"deb path: %@", dylib_or_deb[0]);
-        }
-        
-        NSString *deb_insatll_temp = [NSString stringWithFormat:@"%@/deb", temp_path];
-        
-        // Create task
-        STPrivilegedTask *privilegedTask = [STPrivilegedTask new];
-        [privilegedTask setLaunchPath:DPKG_PATH];
-        [privilegedTask setArguments:@[@"-x", @([[[NSString stringWithFormat:@"%@", dylib_or_deb[0]] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])]];
-
-        // Launch it, user is prompted for password
-        OSStatus err = [privilegedTask launch];
-        if (err == errAuthorizationSuccess) {
-            if(DEBUG == DEBUG_ON){
-                NSLog(@"Task successfully launched");
-            }
-        } else if (err == errAuthorizationCanceled) {
-            if(DEBUG == DEBUG_ON){
-                NSLog(@"User cancelled");
-            }
-            return IPAPATCHER_FAILURE;
-        } else {
-            if(DEBUG == DEBUG_ON){
-                NSLog(@"Something went wrong");
-            }
-            return IPAPATCHER_FAILURE;
-        }
-        [privilegedTask waitUntilExit];
-        
-        /*
-         NSTask *command = [[NSTask alloc] init];
-         command.launchPath = DPKG_PATH;
-         command.arguments = @[@"-x", @([[[NSString stringWithFormat:@"%@", dylib_or_deb[0]] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])];
-         [command launch];
-         [command waitUntilExit];
-         */
-        
-        NSString *debcheck = [NSString stringWithFormat:@"%@/deb/Library/MobileSubstrate/DynamicLibraries", temp_path];
-        if(!folderExists(debcheck)){
-            dispatch_async(dispatch_get_main_queue(), ^{
-                Msg(@"The tweak you entered is not in the correct format.", true);
-            });
-            return IPAPATCHER_FAILURE;
-        }
-        NSString *deb_dylibs = [NSString stringWithFormat:@"%@/deb/Library/MobileSubstrate/DynamicLibraries/", temp_path];
-        NSArray* dirs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:deb_dylibs
-                                                                            error:NULL];
-        NSMutableArray *debFiles = [[NSMutableArray alloc] init];
-        [dirs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-            NSString *filename = (NSString *)obj;
-            NSString *extension = [[filename pathExtension] lowercaseString];
-            if ([extension isEqualToString:@"dylib"]) {
-                [debFiles addObject:[deb_dylibs stringByAppendingPathComponent:filename]];
-            }
-        }];
-        if(DEBUG == DEBUG_ON){
-            NSLog(@".dylib: %@", debFiles);
-        }
-        DylibPathFinder = [debFiles copy];
-        
-        for(int i=0;i<DylibPathFinder.count;i++){
-            printf("%s\n", [DylibPathFinder[i] UTF8String]);
-            NSArray *seperated = [DylibPathFinder[i] componentsSeparatedByString:@"/"];
-            dylib_or_deb[i] = [NSString stringWithFormat:@"%@/deb/Library/MobileSubstrate/DynamicLibraries/%@", temp_path, seperated.lastObject];
-        }
-    }
-
     NSString *DylibFolder = [NSString stringWithFormat:@"%@/Dylibs", app_path];
     NSString *FrameworkFolder = [NSString stringWithFormat:@"%@/Frameworks", app_path];
     

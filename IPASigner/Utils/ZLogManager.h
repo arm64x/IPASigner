@@ -20,7 +20,7 @@ typedef void(^ablock)(NSString *);
 
 - (void)printLog:(char *)log;
 
-- (void)printZipLog:(NSString *)log;
+- (void)printLogStr:(NSString *)log;
 
 
 @end

@@ -137,7 +137,7 @@ struct ContentView: View {
                 
                 TextField(
                     "Import Dylib/Deb File",
-                    text: $signingOptions.dylibPath
+                    text: $signingOptions.dylibs
                 )
                 .frame(width: 500, height: 30, alignment: .center)
                 .allowsHitTesting(false)
@@ -375,11 +375,11 @@ extension ContentView {
                         }
                        
                     case .Dylib:
-                        
-                        if url.pathExtension.lowercased() == "dylib" || url.pathExtension.lowercased() == "deb" {
-                            self.signingOptions.dylibPath = url.path
+                        if url.pathExtension.lowercased() == "dylib" {
+                            self.signingOptions.dylibPaths.append(url.path)
+                            self.signingOptions.dylibs = self.signingOptions.dylibs + url.lastPathComponent + "|"
                         } else {
-                            self.alertMessage = "请选择dylib或者deb文件"
+                            self.alertMessage = "请选择dylib文件"
                             self.showingAlert = true
                         }
                     }                
@@ -487,10 +487,14 @@ extension ContentView {
                         }
                         
                         // 注入插件
-                        if self.signingOptions.dylibPath.count > 0 {
-                            let dylibPaths = NSMutableArray.init(object: self.signingOptions.dylibPath)
-                            if patch_ipa(app.fileURL.path, self.lastMakedTempFolder!, dylibPaths, false) != 1 {
-                                setStatus("插件注入失败:\(self.signingOptions.dylibPath.lastPathComponent)")
+                        if self.signingOptions.dylibPaths.count > 0 {
+                            let dylibPaths = NSMutableArray.init(capacity: self.signingOptions.dylibPaths.count)
+                            for dylibPath in self.signingOptions.dylibPaths {
+                                fileManager.setFilePosixPermissions(URL.init(fileURLWithPath: dylibPath))
+                                dylibPaths.add(dylibPath)
+                            }
+                            if patch_ipa(app.fileURL.path, dylibPaths) != 1 {
+                                setStatus("插件注入失败")
                                 return
                             }
                         }
@@ -610,6 +614,14 @@ extension ContentView {
             setStatus("Unable to delete temp folder")
             Log.write(error.localizedDescription)
         }
+        self.signingOptions.ipaPath = ""
+        self.signingOptions.dylibs = ""
+        self.signingOptions.dylibPaths = []
+        self.signingOptions.app = nil
+        self.signingOptions.appDisplayName = ""
+        self.signingOptions.appBundleId = ""
+        self.signingOptions.appVersion = ""
+        self.signingOptions.appMinimumiOSVersion = ""
     }
     
     func setStatus(_ status: String){

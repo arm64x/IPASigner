@@ -486,12 +486,15 @@ extension ContentView {
                             }
                         }
                         
-                        let dylibPaths = NSMutableArray.init(object: self.signingOptions.dylibPath)
-                        if patch_ipa(app.fileURL.path, self.lastMakedTempFolder!, dylibPaths, false) != 1 {
-                            setStatus("插件注入失败:\(self.signingOptions.dylibPath.lastPathComponent)")
-                            return
+                        // 注入插件
+                        if self.signingOptions.dylibPath.count > 0 {
+                            let dylibPaths = NSMutableArray.init(object: self.signingOptions.dylibPath)
+                            if patch_ipa(app.fileURL.path, self.lastMakedTempFolder!, dylibPaths, false) != 1 {
+                                setStatus("插件注入失败:\(self.signingOptions.dylibPath.lastPathComponent)")
+                                return
+                            }
                         }
-                        
+                   
                         AppSigner().signApp(withAplication: app, certificate: cert, provisioningProfile: profile) { log in
                             self.setStatus(log)
                         } completionHandler: { success, error, ipaURL in

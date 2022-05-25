@@ -217,9 +217,9 @@ int patch_ipa(NSString *app_path, NSString *temp_path, NSMutableArray *dylib_or_
     ASSERT([fileManager createDirectoryAtPath:DylibFolder withIntermediateDirectories:true attributes:nil error:&error], @"Failed to create Dylibs directory for our application.", true);
     ASSERT([fileManager createDirectoryAtPath:FrameworkFolder withIntermediateDirectories:true attributes:nil error:&error], @"Failed to create Frameworks directory for our application.", true);
     // Move files into their places
-    NSString *subpath1 = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle] pathForResource:@"libsubstitute.0" ofType:@"dylib"]];
-    NSString *subpath2 = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle] pathForResource:@"libsubstitute" ofType:@"dylib"]];
-    NSString *substrate = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle] pathForResource:@"CydiaSubstrate" ofType:@"framework"]];
+    NSString *subpath1 = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle] pathForResource:@"Cydia.bundle/libsubstitute.0" ofType:@"dylib"]];
+    NSString *subpath2 = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle] pathForResource:@"Cydia.bundle/libsubstitute" ofType:@"dylib"]];
+    NSString *substrate = [NSString stringWithFormat:@"%@", [[NSBundle mainBundle] pathForResource:@"Cydia.bundle/CydiaSubstrate" ofType:@"framework"]];
     if(DEBUG == DEBUG_ON){
         printf("START====\n%s\n%s\n%s\n", [subpath1 UTF8String], [subpath2 UTF8String], [substrate UTF8String]);
     }

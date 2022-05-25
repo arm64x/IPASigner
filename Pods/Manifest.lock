@@ -1,16 +1,20 @@
 PODS:
   - OpenSSL-Universal (1.1.1500)
+  - STPrivilegedTask (1.0.1)
 
 DEPENDENCIES:
   - OpenSSL-Universal
+  - STPrivilegedTask
 
 SPEC REPOS:
   trunk:
     - OpenSSL-Universal
+    - STPrivilegedTask
 
 SPEC CHECKSUMS:
   OpenSSL-Universal: 5d1de8d199ea9684d7ee48a8caa38d5dbfee1981
+  STPrivilegedTask: 103f97827454e786074640cf89d303be344498c7
 
-PODFILE CHECKSUM: 2476e6a298fed30c9957ddde9ff83172e6545cc2
+PODFILE CHECKSUM: b3f7c00809ea74aa5743beb55a89711c257ec261
 
 COCOAPODS: 1.11.3

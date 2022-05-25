@@ -29,7 +29,6 @@
 		165C9F032835EECC00AC6D35 /* common.mm in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EF22835EECC00AC6D35 /* common.mm */; };
 		165C9F042835EECC00AC6D35 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EF42835EECC00AC6D35 /* base64.cpp */; };
 		165C9F052835EECC00AC6D35 /* json.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EF82835EECC00AC6D35 /* json.cpp */; };
-		165C9F062835EECC00AC6D35 /* .dockerignore in Resources */ = {isa = PBXBuildFile; fileRef = 165C9EF92835EECC00AC6D35 /* .dockerignore */; };
 		165C9F072835EECC00AC6D35 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 165C9EFA2835EECC00AC6D35 /* .gitignore */; };
 		165C9F082835EECC00AC6D35 /* bundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EFC2835EECC00AC6D35 /* bundle.cpp */; };
 		165C9F092835EECC00AC6D35 /* macho.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EFE2835EECC00AC6D35 /* macho.cpp */; };
@@ -39,6 +38,10 @@
 		165C9F0F2835F05400AC6D35 /* ZLogManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F0D2835F05400AC6D35 /* ZLogManager.m */; };
 		165C9F122836047400AC6D35 /* AppSigner.mm in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F102836047400AC6D35 /* AppSigner.mm */; };
 		165C9F16283644AA00AC6D35 /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 165C9F15283644AA00AC6D35 /* AppDefaults.swift */; };
+		166DCB48283E0E07000C2D66 /* patcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 166DCB46283E0E07000C2D66 /* patcher.m */; };
+		166DCB51283E0E12000C2D66 /* NSData+Reading.m in Sources */ = {isa = PBXBuildFile; fileRef = 166DCB4E283E0E12000C2D66 /* NSData+Reading.m */; };
+		166DCB52283E0E12000C2D66 /* operations.m in Sources */ = {isa = PBXBuildFile; fileRef = 166DCB4F283E0E12000C2D66 /* operations.m */; };
+		166DCB53283E0E12000C2D66 /* headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 166DCB50283E0E12000C2D66 /* headers.m */; };
 		16932F0B283797890030C319 /* SigningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16932F0A283797890030C319 /* SigningOptions.swift */; };
 		88A68B8FEE043C9A70D56B03 /* Pods_IPASigner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */; };
 /* End PBXBuildFile section */
@@ -194,7 +197,6 @@
 		165C9EF62835EECC00AC6D35 /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json.h; sourceTree = "<group>"; };
 		165C9EF72835EECC00AC6D35 /* mach-o.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "mach-o.h"; sourceTree = "<group>"; };
 		165C9EF82835EECC00AC6D35 /* json.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json.cpp; sourceTree = "<group>"; };
-		165C9EF92835EECC00AC6D35 /* .dockerignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .dockerignore; sourceTree = "<group>"; };
 		165C9EFA2835EECC00AC6D35 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		165C9EFB2835EECC00AC6D35 /* macho.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macho.h; sourceTree = "<group>"; };
 		165C9EFC2835EECC00AC6D35 /* bundle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bundle.cpp; sourceTree = "<group>"; };
@@ -208,6 +210,15 @@
 		165C9F102836047400AC6D35 /* AppSigner.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = AppSigner.mm; sourceTree = "<group>"; };
 		165C9F112836047400AC6D35 /* AppSigner.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppSigner.h; sourceTree = "<group>"; };
 		165C9F15283644AA00AC6D35 /* AppDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
+		166DCB46283E0E07000C2D66 /* patcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = patcher.m; sourceTree = "<group>"; };
+		166DCB47283E0E07000C2D66 /* patcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = patcher.h; sourceTree = "<group>"; };
+		166DCB4A283E0E12000C2D66 /* NSData+Reading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Reading.h"; sourceTree = "<group>"; };
+		166DCB4B283E0E12000C2D66 /* operations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = operations.h; sourceTree = "<group>"; };
+		166DCB4C283E0E12000C2D66 /* headers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = headers.h; sourceTree = "<group>"; };
+		166DCB4D283E0E12000C2D66 /* defines.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = defines.h; sourceTree = "<group>"; };
+		166DCB4E283E0E12000C2D66 /* NSData+Reading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Reading.m"; sourceTree = "<group>"; };
+		166DCB4F283E0E12000C2D66 /* operations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = operations.m; sourceTree = "<group>"; };
+		166DCB50283E0E12000C2D66 /* headers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = headers.m; sourceTree = "<group>"; };
 		16932F0A283797890030C319 /* SigningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningOptions.swift; sourceTree = "<group>"; };
 		3815835F2C723BA87BC4E1B1 /* Pods-IPASigner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPASigner.release.xcconfig"; path = "Target Support Files/Pods-IPASigner/Pods-IPASigner.release.xcconfig"; sourceTree = "<group>"; };
 		41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IPASigner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -451,6 +462,9 @@
 				165C9F102836047400AC6D35 /* AppSigner.mm */,
 				165C9F0E2835F05400AC6D35 /* ZLogManager.h */,
 				165C9F0D2835F05400AC6D35 /* ZLogManager.m */,
+				166DCB47283E0E07000C2D66 /* patcher.h */,
+				166DCB46283E0E07000C2D66 /* patcher.m */,
+				166DCB49283E0E12000C2D66 /* optool */,
 				165C9EEB2835EECC00AC6D35 /* zsign */,
 				165C9E792835E0B600AC6D35 /* openssl */,
 				165C9E6A2835E09C00AC6D35 /* minizip */,
@@ -462,7 +476,6 @@
 		165C9EEB2835EECC00AC6D35 /* zsign */ = {
 			isa = PBXGroup;
 			children = (
-				165C9EF92835EECC00AC6D35 /* .dockerignore */,
 				165C9EFA2835EECC00AC6D35 /* .gitignore */,
 				165C9F012835EECC00AC6D35 /* archo.cpp */,
 				165C9EEC2835EECC00AC6D35 /* archo.h */,
@@ -493,6 +506,20 @@
 				165C9EF72835EECC00AC6D35 /* mach-o.h */,
 			);
 			path = common;
+			sourceTree = "<group>";
+		};
+		166DCB49283E0E12000C2D66 /* optool */ = {
+			isa = PBXGroup;
+			children = (
+				166DCB4D283E0E12000C2D66 /* defines.h */,
+				166DCB4C283E0E12000C2D66 /* headers.h */,
+				166DCB50283E0E12000C2D66 /* headers.m */,
+				166DCB4A283E0E12000C2D66 /* NSData+Reading.h */,
+				166DCB4E283E0E12000C2D66 /* NSData+Reading.m */,
+				166DCB4B283E0E12000C2D66 /* operations.h */,
+				166DCB4F283E0E12000C2D66 /* operations.m */,
+			);
+			path = optool;
 			sourceTree = "<group>";
 		};
 		4D1B93DAA3F7984DBC10BD1D /* Pods */ = {
@@ -571,7 +598,6 @@
 				165C9F072835EECC00AC6D35 /* .gitignore in Resources */,
 				165C9E452834AF6F00AC6D35 /* Preview Assets.xcassets in Resources */,
 				165C9E422834AF6F00AC6D35 /* Assets.xcassets in Resources */,
-				165C9F062835EECC00AC6D35 /* .dockerignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -635,6 +661,7 @@
 				165C9E692835E02D00AC6D35 /* NSError+ALTErrors.m in Sources */,
 				165C9F0C2835EECC00AC6D35 /* archo.cpp in Sources */,
 				165C9E642835E02D00AC6D35 /* ALTApplication.mm in Sources */,
+				166DCB52283E0E12000C2D66 /* operations.m in Sources */,
 				165C9F082835EECC00AC6D35 /* bundle.cpp in Sources */,
 				165C9E752835E09C00AC6D35 /* unzip.c in Sources */,
 				165C9E3E2834AF6D00AC6D35 /* IPASignerApp.swift in Sources */,
@@ -645,6 +672,7 @@
 				165C9E662835E02D00AC6D35 /* ALTCertificate.m in Sources */,
 				165C9F092835EECC00AC6D35 /* macho.cpp in Sources */,
 				165C9E772835E09C00AC6D35 /* ioapi.c in Sources */,
+				166DCB53283E0E12000C2D66 /* headers.m in Sources */,
 				165C9E632835E02D00AC6D35 /* ALTCapabilities.m in Sources */,
 				165C9F16283644AA00AC6D35 /* AppDefaults.swift in Sources */,
 				165C9E672835E02D00AC6D35 /* ALTProvisioningProfile.m in Sources */,
@@ -653,6 +681,8 @@
 				165C9E682835E02D00AC6D35 /* NSFileManager+Zip.m in Sources */,
 				165C9F042835EECC00AC6D35 /* base64.cpp in Sources */,
 				165C9E652835E02D00AC6D35 /* ALTDevice.m in Sources */,
+				166DCB48283E0E07000C2D66 /* patcher.m in Sources */,
+				166DCB51283E0E12000C2D66 /* NSData+Reading.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

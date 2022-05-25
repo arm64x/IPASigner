@@ -20,87 +20,145 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		129E32E3A12ED65A722A63ADC1727F4B /* Pods-IPASigner-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E05A9FFC4AA6D7769835415F2E2FAF6 /* Pods-IPASigner-dummy.m */; };
-		4314723566881A2DD79A74DF093CFE76 /* Pods-IPASigner-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 334E98D768DC082931A8A733750154F5 /* Pods-IPASigner-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		BD0FF839F056E504D78558F089978DD8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1430F003D39D9906881A6AC724B7931 /* Cocoa.framework */; };
+		17079BE5C93A0DC9F2D5D1FB313C0BC1 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0562AA2B50D4284AB12C6DF9BD0C5B83 /* Cocoa.framework */; };
+		1BF697A8040A30EFCE68604CC0852E0D /* STPrivilegedTask-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E57F8722786E834ACB5CCE5794A8A27B /* STPrivilegedTask-dummy.m */; };
+		5275F3096B93BAD2F02C288C94E7E56B /* STPrivilegedTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 12EA9EE33AB70DF57F0C06E7702E8F36 /* STPrivilegedTask.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		6AECD5FFBED294A030312066C6458FBA /* STPrivilegedTask-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 50A66DAD30D30207BDB99F5354B14EE9 /* STPrivilegedTask-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		91F97E71F244F6B061B7357B8C79B4C5 /* Pods-IPASigner-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 334E98D768DC082931A8A733750154F5 /* Pods-IPASigner-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		9FE26C0C44CEA56FAEAC60A57D2CF11A /* STPrivilegedTask.h in Headers */ = {isa = PBXBuildFile; fileRef = 18063BC69094380687CD7D7517184FB4 /* STPrivilegedTask.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B677862BD2C18CD450FE05D9785A101F /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0562AA2B50D4284AB12C6DF9BD0C5B83 /* Cocoa.framework */; };
+		C551BAB6CA0F8299344693075C7FDC97 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C195AADF78F6CDE5B313D71D0D450ECE /* Security.framework */; };
+		DA22FF06892BA316F907E80D8B9AD984 /* Pods-IPASigner-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 9E05A9FFC4AA6D7769835415F2E2FAF6 /* Pods-IPASigner-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		E3A485E59FCC182041720A92A5867389 /* PBXContainerItemProxy */ = {
+		A0C3022258B7BDEBC01A3AED0F624292 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B9ED5194E665042005069EF06C82A050;
 			remoteInfo = "OpenSSL-Universal";
 		};
+		EA0BE66718119EC829A9E82A43815C55 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05327B1DB6967DBAA19D1ED734FDBD96;
+			remoteInfo = STPrivilegedTask;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1F5A7A3F58CB5F0F5C21CF92675D3C89 /* OpenSSL-Universal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "OpenSSL-Universal.release.xcconfig"; sourceTree = "<group>"; };
+		0562AA2B50D4284AB12C6DF9BD0C5B83 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		10F677365303D3513325E7E2F5CDCD01 /* STPrivilegedTask.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = STPrivilegedTask.modulemap; sourceTree = "<group>"; };
+		12EA9EE33AB70DF57F0C06E7702E8F36 /* STPrivilegedTask.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = STPrivilegedTask.m; sourceTree = "<group>"; };
+		16C1BBC8C1D1A542BBC6E6769AE4009C /* OpenSSL-Universal.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "OpenSSL-Universal.release.xcconfig"; sourceTree = "<group>"; };
+		18063BC69094380687CD7D7517184FB4 /* STPrivilegedTask.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = STPrivilegedTask.h; sourceTree = "<group>"; };
+		308FE174876EE45FAD5AE6CC15E49093 /* STPrivilegedTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = STPrivilegedTask.release.xcconfig; sourceTree = "<group>"; };
 		334E98D768DC082931A8A733750154F5 /* Pods-IPASigner-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-IPASigner-umbrella.h"; sourceTree = "<group>"; };
 		3BC0049F3424CE28E893686DBB9FE9FB /* Pods-IPASigner-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-IPASigner-acknowledgements.plist"; sourceTree = "<group>"; };
+		3E2EF396522E34306904C352DBA3B8B6 /* OpenSSL-Universal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "OpenSSL-Universal.debug.xcconfig"; sourceTree = "<group>"; };
+		50A66DAD30D30207BDB99F5354B14EE9 /* STPrivilegedTask-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "STPrivilegedTask-umbrella.h"; sourceTree = "<group>"; };
+		51F9934BB6567CD9835EF3D380555CAD /* STPrivilegedTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = STPrivilegedTask.debug.xcconfig; sourceTree = "<group>"; };
+		63729998D2E15BFC790416ABE7872F04 /* OpenSSL.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = OpenSSL.xcframework; path = Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
 		64680FFBD70B5310B45CC273C244A119 /* Pods-IPASigner-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-IPASigner-Info.plist"; sourceTree = "<group>"; };
 		70ABB1C64A98FB3635D951B7B01A0F80 /* Pods-IPASigner.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-IPASigner.modulemap"; sourceTree = "<group>"; };
+		8C7E5D60A99CEFE2F6B9F4FF9E3FB505 /* OpenSSL-Universal-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "OpenSSL-Universal-xcframeworks.sh"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		9E05A9FFC4AA6D7769835415F2E2FAF6 /* Pods-IPASigner-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-IPASigner-dummy.m"; sourceTree = "<group>"; };
-		A00901BCB93A4430578C33A30A47A8DB /* OpenSSL-Universal-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "OpenSSL-Universal-xcframeworks.sh"; sourceTree = "<group>"; };
-		AADCA1D8F987E5153FA1ECE55D2B2351 /* OpenSSL.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = OpenSSL.xcframework; path = Frameworks/OpenSSL.xcframework; sourceTree = "<group>"; };
 		C018F3D21F3CFDA1737BDE3C2F53B094 /* Pods-IPASigner */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-IPASigner"; path = Pods_IPASigner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		C1430F003D39D9906881A6AC724B7931 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Cocoa.framework; sourceTree = DEVELOPER_DIR; };
+		C195AADF78F6CDE5B313D71D0D450ECE /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/Security.framework; sourceTree = DEVELOPER_DIR; };
+		C395CD4461BAB57759BC9D133E098225 /* STPrivilegedTask-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "STPrivilegedTask-prefix.pch"; sourceTree = "<group>"; };
+		C6A7435AE64D313C26F172078384F4AE /* STPrivilegedTask-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "STPrivilegedTask-Info.plist"; sourceTree = "<group>"; };
 		C728E906D8DBB725A3B16DD68C1F2A55 /* Pods-IPASigner-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-IPASigner-acknowledgements.markdown"; sourceTree = "<group>"; };
-		CBA942D70B67070CCEF49DF777ACD982 /* OpenSSL-Universal.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "OpenSSL-Universal.debug.xcconfig"; sourceTree = "<group>"; };
 		D7DD1D34050F11A8125073E2BF822435 /* Pods-IPASigner-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-IPASigner-frameworks.sh"; sourceTree = "<group>"; };
 		DA64BB4F6843065CEFB3ADF2E8633FDA /* Pods-IPASigner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-IPASigner.debug.xcconfig"; sourceTree = "<group>"; };
 		DD3CE1D969F13392072CC055893127D1 /* Pods-IPASigner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-IPASigner.release.xcconfig"; sourceTree = "<group>"; };
+		E57F8722786E834ACB5CCE5794A8A27B /* STPrivilegedTask-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "STPrivilegedTask-dummy.m"; sourceTree = "<group>"; };
+		ECB81C33948E641ABE3B268D296018CC /* STPrivilegedTask */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = STPrivilegedTask; path = STPrivilegedTask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		1B8EDE67DEC43E8199E1C6D4C08C9D87 /* Frameworks */ = {
+		436A83F9AF52DE8608685BFA557D09D6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD0FF839F056E504D78558F089978DD8 /* Cocoa.framework in Frameworks */,
+				B677862BD2C18CD450FE05D9785A101F /* Cocoa.framework in Frameworks */,
+				C551BAB6CA0F8299344693075C7FDC97 /* Security.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		45E7A57E660CE156B0A5E057D9D64C37 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				17079BE5C93A0DC9F2D5D1FB313C0BC1 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2D8C8302E198D06CDF276F3269E7D929 /* Frameworks */ = {
+		00C4A19638C0F9F05F59705ABE4F0D08 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				AADCA1D8F987E5153FA1ECE55D2B2351 /* OpenSSL.xcframework */,
+				363525C233E3249C1A433E7B6F4A5245 /* OpenSSL-Universal */,
+				DD259941EFA08372B9C67EF2815436E8 /* STPrivilegedTask */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		0D16AB8CB2AF8A28BF098C188666064B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				63729998D2E15BFC790416ABE7872F04 /* OpenSSL.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		316A4EE1495B6DA8B1957F93D95A92A7 /* Support Files */ = {
+		12BF0FD4254D9C56BCCF8AB0A9C0132E /* OS X */ = {
 			isa = PBXGroup;
 			children = (
-				A00901BCB93A4430578C33A30A47A8DB /* OpenSSL-Universal-xcframeworks.sh */,
-				CBA942D70B67070CCEF49DF777ACD982 /* OpenSSL-Universal.debug.xcconfig */,
-				1F5A7A3F58CB5F0F5C21CF92675D3C89 /* OpenSSL-Universal.release.xcconfig */,
+				0562AA2B50D4284AB12C6DF9BD0C5B83 /* Cocoa.framework */,
+				C195AADF78F6CDE5B313D71D0D450ECE /* Security.framework */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/OpenSSL-Universal";
+			name = "OS X";
 			sourceTree = "<group>";
 		};
-		4E62780B97D6C66BACF776DF12651B8A /* OpenSSL-Universal */ = {
+		314954810BCF6C9B7A9169A442797ED6 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				2D8C8302E198D06CDF276F3269E7D929 /* Frameworks */,
-				316A4EE1495B6DA8B1957F93D95A92A7 /* Support Files */,
+				10F677365303D3513325E7E2F5CDCD01 /* STPrivilegedTask.modulemap */,
+				E57F8722786E834ACB5CCE5794A8A27B /* STPrivilegedTask-dummy.m */,
+				C6A7435AE64D313C26F172078384F4AE /* STPrivilegedTask-Info.plist */,
+				C395CD4461BAB57759BC9D133E098225 /* STPrivilegedTask-prefix.pch */,
+				50A66DAD30D30207BDB99F5354B14EE9 /* STPrivilegedTask-umbrella.h */,
+				51F9934BB6567CD9835EF3D380555CAD /* STPrivilegedTask.debug.xcconfig */,
+				308FE174876EE45FAD5AE6CC15E49093 /* STPrivilegedTask.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/STPrivilegedTask";
+			sourceTree = "<group>";
+		};
+		363525C233E3249C1A433E7B6F4A5245 /* OpenSSL-Universal */ = {
+			isa = PBXGroup;
+			children = (
+				0D16AB8CB2AF8A28BF098C188666064B /* Frameworks */,
+				AC19E0548561E388375D25D128A60611 /* Support Files */,
 			);
 			name = "OpenSSL-Universal";
 			path = "OpenSSL-Universal";
 			sourceTree = "<group>";
 		};
-		8479BAA8FF147F675C3CCF6774776249 /* Pods */ = {
+		AC19E0548561E388375D25D128A60611 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				4E62780B97D6C66BACF776DF12651B8A /* OpenSSL-Universal */,
+				8C7E5D60A99CEFE2F6B9F4FF9E3FB505 /* OpenSSL-Universal-xcframeworks.sh */,
+				3E2EF396522E34306904C352DBA3B8B6 /* OpenSSL-Universal.debug.xcconfig */,
+				16C1BBC8C1D1A542BBC6E6769AE4009C /* OpenSSL-Universal.release.xcconfig */,
 			);
-			name = Pods;
+			name = "Support Files";
+			path = "../Target Support Files/OpenSSL-Universal";
 			sourceTree = "<group>";
 		};
 		BCF971D77C2995ACA0C052C2D35F919F /* Targets Support Files */ = {
@@ -109,6 +167,14 @@
 				CBB5FFE65FF999C3D202C1BC1311B788 /* Pods-IPASigner */,
 			);
 			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		C080C886C9E2F80D52E3E86A62E5B711 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				12BF0FD4254D9C56BCCF8AB0A9C0132E /* OS X */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		CBB5FFE65FF999C3D202C1BC1311B788 /* Pods-IPASigner */ = {
@@ -132,33 +198,29 @@
 			isa = PBXGroup;
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
-				E0A1E60606E0BF6E2E10F1F01350DFE8 /* Frameworks */,
-				8479BAA8FF147F675C3CCF6774776249 /* Pods */,
-				F5E59B4FFDF300E58E67D71093271802 /* Products */,
+				C080C886C9E2F80D52E3E86A62E5B711 /* Frameworks */,
+				00C4A19638C0F9F05F59705ABE4F0D08 /* Pods */,
+				F6601F05B2ABD829BAD3FF60D23B25D1 /* Products */,
 				BCF971D77C2995ACA0C052C2D35F919F /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
-		E0A1E60606E0BF6E2E10F1F01350DFE8 /* Frameworks */ = {
+		DD259941EFA08372B9C67EF2815436E8 /* STPrivilegedTask */ = {
 			isa = PBXGroup;
 			children = (
-				E2A8756CA1FF5258A0344D53C5C60EC1 /* OS X */,
+				18063BC69094380687CD7D7517184FB4 /* STPrivilegedTask.h */,
+				12EA9EE33AB70DF57F0C06E7702E8F36 /* STPrivilegedTask.m */,
+				314954810BCF6C9B7A9169A442797ED6 /* Support Files */,
 			);
-			name = Frameworks;
+			name = STPrivilegedTask;
+			path = STPrivilegedTask;
 			sourceTree = "<group>";
 		};
-		E2A8756CA1FF5258A0344D53C5C60EC1 /* OS X */ = {
-			isa = PBXGroup;
-			children = (
-				C1430F003D39D9906881A6AC724B7931 /* Cocoa.framework */,
-			);
-			name = "OS X";
-			sourceTree = "<group>";
-		};
-		F5E59B4FFDF300E58E67D71093271802 /* Products */ = {
+		F6601F05B2ABD829BAD3FF60D23B25D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				C018F3D21F3CFDA1737BDE3C2F53B094 /* Pods-IPASigner */,
+				ECB81C33948E641ABE3B268D296018CC /* STPrivilegedTask */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -166,30 +228,58 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		5AD8A9A8AD1642935FC666EF2318AFDC /* Headers */ = {
+		1EB532201E4243AF9495CF266A3FDBCD /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4314723566881A2DD79A74DF093CFE76 /* Pods-IPASigner-umbrella.h in Headers */,
+				91F97E71F244F6B061B7357B8C79B4C5 /* Pods-IPASigner-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		857CB1C69F867B81728BE2FE9D75C771 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9FE26C0C44CEA56FAEAC60A57D2CF11A /* STPrivilegedTask.h in Headers */,
+				6AECD5FFBED294A030312066C6458FBA /* STPrivilegedTask-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		B88804C040C3DED3334F706B3E497752 /* Pods-IPASigner */ = {
+		05327B1DB6967DBAA19D1ED734FDBD96 /* STPrivilegedTask */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1B2515CD60853C2F60CECABFE21C6829 /* Build configuration list for PBXNativeTarget "Pods-IPASigner" */;
+			buildConfigurationList = EB7216580AC9671E7A16548748D142EB /* Build configuration list for PBXNativeTarget "STPrivilegedTask" */;
 			buildPhases = (
-				5AD8A9A8AD1642935FC666EF2318AFDC /* Headers */,
-				A41D9F4A81D1EFCCE2B46277A4821AB2 /* Sources */,
-				1B8EDE67DEC43E8199E1C6D4C08C9D87 /* Frameworks */,
-				DD308E2E2555DCC42BF472FCB36D5EBE /* Resources */,
+				857CB1C69F867B81728BE2FE9D75C771 /* Headers */,
+				AC5DE12E3205955D8D58D98E1622404E /* Sources */,
+				436A83F9AF52DE8608685BFA557D09D6 /* Frameworks */,
+				8BABCA870ED658E3ECCEAA39D4B0DAF2 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				FCEC78345D3C6714C559C154BDE1CDB0 /* PBXTargetDependency */,
+			);
+			name = STPrivilegedTask;
+			productName = STPrivilegedTask;
+			productReference = ECB81C33948E641ABE3B268D296018CC /* STPrivilegedTask */;
+			productType = "com.apple.product-type.framework";
+		};
+		B88804C040C3DED3334F706B3E497752 /* Pods-IPASigner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D4422BFF2B85799F7008DE5204182CE3 /* Build configuration list for PBXNativeTarget "Pods-IPASigner" */;
+			buildPhases = (
+				1EB532201E4243AF9495CF266A3FDBCD /* Headers */,
+				800BED979966FDDF9306E305326F2496 /* Sources */,
+				45E7A57E660CE156B0A5E057D9D64C37 /* Frameworks */,
+				EBDB5221AB87F54CD2834A2365ABE97D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1F5E2CBC415DE28F9C34B3BD5831E20B /* PBXTargetDependency */,
+				EDABDB1F19B1D4283604DC09CE0DF846 /* PBXTargetDependency */,
 			);
 			name = "Pods-IPASigner";
 			productName = Pods_IPASigner;
@@ -214,18 +304,26 @@
 				en,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = F5E59B4FFDF300E58E67D71093271802 /* Products */;
+			productRefGroup = F6601F05B2ABD829BAD3FF60D23B25D1 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				B9ED5194E665042005069EF06C82A050 /* OpenSSL-Universal */,
 				B88804C040C3DED3334F706B3E497752 /* Pods-IPASigner */,
+				05327B1DB6967DBAA19D1ED734FDBD96 /* STPrivilegedTask */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		DD308E2E2555DCC42BF472FCB36D5EBE /* Resources */ = {
+		8BABCA870ED658E3ECCEAA39D4B0DAF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EBDB5221AB87F54CD2834A2365ABE97D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -255,29 +353,80 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A41D9F4A81D1EFCCE2B46277A4821AB2 /* Sources */ = {
+		800BED979966FDDF9306E305326F2496 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				129E32E3A12ED65A722A63ADC1727F4B /* Pods-IPASigner-dummy.m in Sources */,
+				DA22FF06892BA316F907E80D8B9AD984 /* Pods-IPASigner-dummy.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AC5DE12E3205955D8D58D98E1622404E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5275F3096B93BAD2F02C288C94E7E56B /* STPrivilegedTask.m in Sources */,
+				1BF697A8040A30EFCE68604CC0852E0D /* STPrivilegedTask-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		FCEC78345D3C6714C559C154BDE1CDB0 /* PBXTargetDependency */ = {
+		1F5E2CBC415DE28F9C34B3BD5831E20B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = "OpenSSL-Universal";
 			target = B9ED5194E665042005069EF06C82A050 /* OpenSSL-Universal */;
-			targetProxy = E3A485E59FCC182041720A92A5867389 /* PBXContainerItemProxy */;
+			targetProxy = A0C3022258B7BDEBC01A3AED0F624292 /* PBXContainerItemProxy */;
+		};
+		EDABDB1F19B1D4283604DC09CE0DF846 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = STPrivilegedTask;
+			target = 05327B1DB6967DBAA19D1ED734FDBD96 /* STPrivilegedTask */;
+			targetProxy = EA0BE66718119EC829A9E82A43815C55 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		0B91ABB31AAAE38C8B5B8BCD7599C672 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 308FE174876EE45FAD5AE6CC15E49093 /* STPrivilegedTask.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/STPrivilegedTask/STPrivilegedTask-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/STPrivilegedTask/STPrivilegedTask-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MODULEMAP_FILE = "Target Support Files/STPrivilegedTask/STPrivilegedTask.modulemap";
+				PRODUCT_MODULE_NAME = STPrivilegedTask;
+				PRODUCT_NAME = STPrivilegedTask;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		0DCF45E6FFA673D548A4B4E6EBA1814C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CBA942D70B67070CCEF49DF777ACD982 /* OpenSSL-Universal.debug.xcconfig */;
+			baseConfigurationReference = 3E2EF396522E34306904C352DBA3B8B6 /* OpenSSL-Universal.debug.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -290,6 +439,42 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		588A991FC29104F21D940138DFC5D197 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51F9934BB6567CD9835EF3D380555CAD /* STPrivilegedTask.debug.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_PREFIX_HEADER = "Target Support Files/STPrivilegedTask/STPrivilegedTask-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/STPrivilegedTask/STPrivilegedTask-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MODULEMAP_FILE = "Target Support Files/STPrivilegedTask/STPrivilegedTask.modulemap";
+				PRODUCT_MODULE_NAME = STPrivilegedTask;
+				PRODUCT_NAME = STPrivilegedTask;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
 		};
@@ -421,7 +606,25 @@
 			};
 			name = Debug;
 		};
-		8A95B8C7A2A2C9D8FBFCFC0856312352 /* Release */ = {
+		96EDB3E6A0B9BF69D9CE4B064F349B1E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16C1BBC8C1D1A542BBC6E6769AE4009C /* OpenSSL-Universal.release.xcconfig */;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		9F51F765861E27DF798CD3E3AB022D11 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DD3CE1D969F13392072CC055893127D1 /* Pods-IPASigner.release.xcconfig */;
 			buildSettings = {
@@ -458,25 +661,7 @@
 			};
 			name = Release;
 		};
-		96EDB3E6A0B9BF69D9CE4B064F349B1E /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1F5A7A3F58CB5F0F5C21CF92675D3C89 /* OpenSSL-Universal.release.xcconfig */;
-			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				COMBINE_HIDPI_IMAGES = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/../Frameworks",
-				);
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
-				SDKROOT = macosx;
-			};
-			name = Release;
-		};
-		E20E27E40A6F7D29A2AB2A62D7FA0295 /* Debug */ = {
+		C69265A6732F0FADB6932EC5A8B4D9CB /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DA64BB4F6843065CEFB3ADF2E8633FDA /* Pods-IPASigner.debug.xcconfig */;
 			buildSettings = {
@@ -516,15 +701,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		1B2515CD60853C2F60CECABFE21C6829 /* Build configuration list for PBXNativeTarget "Pods-IPASigner" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				E20E27E40A6F7D29A2AB2A62D7FA0295 /* Debug */,
-				8A95B8C7A2A2C9D8FBFCFC0856312352 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -539,6 +715,24 @@
 			buildConfigurations = (
 				0DCF45E6FFA673D548A4B4E6EBA1814C /* Debug */,
 				96EDB3E6A0B9BF69D9CE4B064F349B1E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D4422BFF2B85799F7008DE5204182CE3 /* Build configuration list for PBXNativeTarget "Pods-IPASigner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C69265A6732F0FADB6932EC5A8B4D9CB /* Debug */,
+				9F51F765861E27DF798CD3E3AB022D11 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EB7216580AC9671E7A16548748D142EB /* Build configuration list for PBXNativeTarget "STPrivilegedTask" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				588A991FC29104F21D940138DFC5D197 /* Debug */,
+				0B91ABB31AAAE38C8B5B8BCD7599C672 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -17,6 +17,15 @@ BOOL folderExists(NSString *folder){
     return isDirectory;
 }
 
+int mv(NSString *file, NSString *to){
+    NSTask *cp_task = [[NSTask alloc] init];
+    cp_task.launchPath = CP_PATH;
+    cp_task.arguments = @[file, to];
+    [cp_task launch];
+    [cp_task waitUntilExit];
+    return IPAPATCHER_SUCCESS;
+}
+
 int cp(NSString *file, NSString *to){
     NSTask *cp_task = [[NSTask alloc] init];
     cp_task.launchPath = CP_PATH;
@@ -79,7 +88,7 @@ int patch_binary(NSString *app_binary, NSString* dylib_path){
     return IPAPATCHER_SUCCESS;
 }
 
-int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb) {
+int patch_ipa(NSString *app_path, NSMutableArray *dylib_paths) {
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -91,6 +100,16 @@ int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb) {
     
     NSString *app_binary = @"";
     
+    NSMutableArray *deb_paths = [NSMutableArray array];
+    NSMutableArray *deb_indexs = [NSMutableArray array];
+    for(int i=0;i<dylib_paths.count;i++){
+        NSString *path = [dylib_paths[i] lowercaseString];
+        if ([path hasSuffix:@".deb"]) {
+            [deb_paths addObject:path];
+            [deb_indexs addObject:[NSNumber numberWithInt:i]];
+        }
+    }
+        
     if (resultDictionary) {
         app_binary = [resultDictionary objectForKey:NameKey];
     } else {
@@ -127,10 +146,10 @@ int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb) {
     ASSERT(cp(subpath2, DylibFolder), @"Failed to copy over libsubstitute", true);
     ASSERT(cp(substrate, FrameworkFolder), @"Failed to copy over CydiaSubstrate", true);
     
-    for(int i=0;i<dylib_or_deb.count;i++){
+    for(int i=0;i<dylib_paths.count;i++){
         //TODO: use [manager copyItemAtPath:ipa_path toPath:selected_path error:nil]; I tried it, and it just failed to copy every time.
-        NSString *msg = [NSString stringWithFormat:@"Failed to copy %@", dylib_or_deb[i]];
-        ASSERT(cp(dylib_or_deb[i], DylibFolder), msg, true);
+        NSString *msg = [NSString stringWithFormat:@"Failed to copy %@", dylib_paths[i]];
+        ASSERT(cp(dylib_paths[i], DylibFolder), msg, true);
     }
     
     // Patch the binary to load given frameworks/dylibs
@@ -138,8 +157,8 @@ int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb) {
     ASSERT(patch_binary(app_binary, @"@executable_path/Dylibs/libsubstitute.0.dylib"), @"Failed to apply the libsubstitute.0 patch!", true);
     ASSERT(patch_binary(app_binary, @"@executable_path/Frameworks/CydiaSubstrate.framework/CydiaSubstrate"), @"Failed to apply the CydiaSubstrate patch!", true);
     
-    for(int i=0;i<dylib_or_deb.count;i++){
-        NSArray *dylibNameArray = [dylib_or_deb[i] componentsSeparatedByString:@"/"];
+    for(int i=0;i<dylib_paths.count;i++){
+        NSArray *dylibNameArray = [dylib_paths[i] componentsSeparatedByString:@"/"];
         if(DEBUG == DEBUG_ON){
             NSLog(@"array:%@", dylibNameArray);
         }
@@ -162,4 +181,99 @@ int patch_ipa(NSString *app_path, NSMutableArray *dylib_or_deb) {
     
     printf("[*] Done\n");
     return IPAPATCHER_SUCCESS;
+}
+
+
+char* deb_test(NSString *temp_path, NSString* deb_path) {
+    char* result = nil;
+    
+    if(!fileExists([BREW_PATH UTF8String])){
+        NSTask *command = [[NSTask alloc] init];
+        command.launchPath = BASH_PATH;
+        command.arguments = @[@"-c", @"\"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)\""];
+        [command launch];
+        [command waitUntilExit];
+    }
+    if(!fileExists([DPKG_PATH UTF8String])){
+        NSTask *command = [[NSTask alloc] init];
+        command.launchPath = BREW_PATH;
+        command.arguments = @[@"install", @"dpkg"];
+        [command launch];
+        [command waitUntilExit];
+    }
+    
+    NSString *deb_insatll_temp = [NSString stringWithFormat:@"%@/deb", temp_path];
+    if(DEBUG == DEBUG_ON){
+        NSLog(@"deb path: %@", deb_path);
+        NSLog(@"deb_insatll_temp:%@",deb_insatll_temp);
+    }
+    
+    // Create task
+    /*
+    STPrivilegedTask *privilegedTask = [STPrivilegedTask new];
+    [privilegedTask setLaunchPath:DPKG_PATH];
+    [privilegedTask setArguments:@[@"-x", @([[[NSString stringWithFormat:@"%@", debPath] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])]];
+
+    // Launch it, user is prompted for password
+    OSStatus err = [privilegedTask launch];
+    if (err == errAuthorizationSuccess) {
+        if(DEBUG == DEBUG_ON){
+            NSLog(@"Task successfully launched");
+        }
+    } else if (err == errAuthorizationCanceled) {
+        if(DEBUG == DEBUG_ON){
+            NSLog(@"User cancelled");
+        }
+        return IPAPATCHER_FAILURE;
+    } else {
+        if(DEBUG == DEBUG_ON){
+            NSLog(@"Something went wrong");
+        }
+        return IPAPATCHER_FAILURE;
+    }
+    [privilegedTask waitUntilExit];
+    */
+    
+    NSTask *command = [[NSTask alloc] init];
+    command.launchPath = DPKG_PATH;
+    command.arguments = @[@"-x", @([[[NSString stringWithFormat:@"%@", deb_path] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])];
+    NSLog(@"%@", command.arguments);
+    [command launch];
+    [command waitUntilExit];
+    
+    NSString *debcheck = [NSString stringWithFormat:@"%@/deb/Library/MobileSubstrate/DynamicLibraries", temp_path];
+    if(!folderExists(debcheck)){
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[ZLogManager shareManager] printLogStr:@"The tweak you entered is not in the correct format."];
+        });
+        return result;
+    }
+    NSString *deb_dylibs = [NSString stringWithFormat:@"%@/deb/Library/MobileSubstrate/DynamicLibraries/", temp_path];
+    NSArray* dirs = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:deb_dylibs
+                                                                        error:NULL];
+    NSMutableArray *debFiles = [[NSMutableArray alloc] init];
+    [dirs enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        NSString *filename = (NSString *)obj;
+        NSString *extension = [[filename pathExtension] lowercaseString];
+        if ([extension isEqualToString:@"dylib"]) {
+            [debFiles addObject:[deb_dylibs stringByAppendingPathComponent:filename]];
+        }
+    }];
+    
+    if (DEBUG == DEBUG_ON) {
+        NSLog(@".dylib: %@", debFiles);
+    }
+    
+    NSString *dylib_paths = @"";
+    for(int i = 0; i < debFiles.count; i++){
+        NSString *dylib_path = debFiles[i];
+        if (dylib_paths.length == 0) {
+            dylib_paths = dylib_path;
+        } else {
+            dylib_paths = [NSString stringWithFormat:@"%@,%@",dylib_paths,dylib_path];
+        }
+    }
+    NSLog(@"new_dylib_path:%@",dylib_paths);
+    result = [dylib_paths UTF8String];
+    return result;
 }

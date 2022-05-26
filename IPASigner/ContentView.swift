@@ -124,11 +124,10 @@ struct ContentView: View {
                 }
                 .frame(width: 80, height: 30, alignment: .center)
                 .disabled(controlsDisable)
-                
             }
             
             HStack {
-                Text("Dylib/Deb File：")
+                Text("Dylib Files：")
                     .font(.body)
                     .foregroundColor(.black)
                     .multilineTextAlignment(.leading)
@@ -136,7 +135,7 @@ struct ContentView: View {
                     .offset(x: 0, y: 5)
                 
                 TextField(
-                    "Import Dylib/Deb File",
+                    "Import Dylib Files",
                     text: $signingOptions.dylibs
                 )
                 .frame(width: 500, height: 30, alignment: .center)
@@ -378,6 +377,8 @@ extension ContentView {
                         if url.pathExtension.lowercased() == "dylib" {
                             self.signingOptions.dylibPaths.append(url.path)
                             self.signingOptions.dylibs = self.signingOptions.dylibs + url.lastPathComponent + "|"
+                        } else if url.pathExtension.lowercased() == "deb" {
+                            self.unzipDeb(url)
                         } else {
                             self.alertMessage = "请选择dylib文件"
                             self.showingAlert = true
@@ -389,17 +390,18 @@ extension ContentView {
     }
     
     func unzipIPA(_ fileURL: URL) {
-        //MARK: Create working temp folder
-        var tempFolder: String! = nil
-        if let tmpFolder = makeTempFolder() {
-            tempFolder = tmpFolder
-        } else {
-            return
+        if lastMakedTempFolder == nil {
+            //MARK: Create working temp folder
+            var tempFolder: String! = nil
+            if let tmpFolder = makeTempFolder() {
+                tempFolder = tmpFolder
+            } else {
+                return
+            }
+            lastMakedTempFolder = tempFolder
         }
-        
-        lastMakedTempFolder = tempFolder
-        
-        let workingDirectory = tempFolder.stringByAppendingPathComponent("out")
+    
+        let workingDirectory = lastMakedTempFolder!.stringByAppendingPathComponent("out")
         let payloadDirectory = workingDirectory.stringByAppendingPathComponent("Payload/")
         
         do {
@@ -408,7 +410,42 @@ extension ContentView {
             importAppBundle(appBundleURL)
         } catch {
             setStatus("Error extracting ipa file")
-            cleanup(tempFolder); return
+            cleanup(lastMakedTempFolder!); return
+        }
+    }
+    
+    func unzipDeb(_ fileURL: URL) {
+        if lastMakedTempFolder == nil {
+            //MARK: Create working temp folder
+            var tempFolder: String! = nil
+            if let tmpFolder = makeTempFolder() {
+                tempFolder = tmpFolder
+            } else {
+                return
+            }
+            lastMakedTempFolder = tempFolder
+        }
+        
+        let toURL = URL.init(fileURLWithPath: lastMakedTempFolder!).appendingPathComponent(fileURL.lastPathComponent)
+        print("toURL:\(toURL.path)")
+        do {
+            if fileManager.fileExists(atPath: toURL.path) {
+                try fileManager.removeItem(at: toURL)
+            }
+            try fileManager.copyItem(at: fileURL, to: toURL)
+            if let result = deb_test(lastMakedTempFolder!, toURL.path) {
+                if let dylibPathString = NSString.init(utf8String: result) {
+                    self.signingOptions.dylibPaths = dylibPathString.components(separatedBy: ",")
+                    var dylibNames = ""
+                    for dylibPath in self.signingOptions.dylibPaths {
+                        let dylibName = URL(fileURLWithPath: dylibPath).lastPathComponent
+                        dylibNames = dylibNames + " " + dylibName
+                    }
+                    self.signingOptions.dylibs = dylibNames
+                }
+            }
+        } catch let error {
+            setStatus(error.localizedDescription)
         }
     }
     
@@ -522,15 +559,13 @@ extension ContentView {
                                         print(error.localizedDescription)
                                         self.setStatus("签名成功，保存失败，保存于\(ipaURL.path)")
                                     }
-                                    if let tempFolder = self.lastMakedTempFolder {
-                                        cleanup(tempFolder)
-                                    }
                                 }
                             } else {
                                 self.setStatus("签名失败：\(error.debugDescription)")
-                                if let tempFolder = self.lastMakedTempFolder {
-                                    cleanup(tempFolder)
-                                }
+                            }
+                            if let tempFolder = self.lastMakedTempFolder {
+                                cleanup(tempFolder)
+                                self.lastMakedTempFolder = nil
                             }
                         }
                     }
@@ -607,21 +642,22 @@ extension ContentView {
     }
     
     func cleanup(_ tempFolder: String){
-        do {
-            Log.write("Deleting: \(tempFolder)")
-            try fileManager.removeItem(atPath: tempFolder)
-        } catch let error as NSError {
-            setStatus("Unable to delete temp folder")
-            Log.write(error.localizedDescription)
-        }
-        self.signingOptions.ipaPath = ""
-        self.signingOptions.dylibs = ""
-        self.signingOptions.dylibPaths = []
-        self.signingOptions.app = nil
-        self.signingOptions.appDisplayName = ""
-        self.signingOptions.appBundleId = ""
-        self.signingOptions.appVersion = ""
-        self.signingOptions.appMinimumiOSVersion = ""
+//        do {
+//            Log.write("Deleting: \(tempFolder)")
+//            try fileManager.removeItem(atPath: tempFolder)
+//        } catch let error as NSError {
+//            setStatus("Unable to delete temp folder")
+//            Log.write(error.localizedDescription)
+//        }
+//        
+//        self.signingOptions.ipaPath = ""
+//        self.signingOptions.dylibs = ""
+//        self.signingOptions.dylibPaths = []
+//        self.signingOptions.app = nil
+//        self.signingOptions.appDisplayName = ""
+//        self.signingOptions.appBundleId = ""
+//        self.signingOptions.appVersion = ""
+//        self.signingOptions.appMinimumiOSVersion = ""
     }
     
     func setStatus(_ status: String){

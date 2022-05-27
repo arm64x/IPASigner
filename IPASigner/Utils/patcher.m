@@ -92,24 +92,12 @@ int patch_ipa(NSString *app_path, NSMutableArray *dylib_paths) {
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
-        
     NSDictionary *resultDictionary = [NSDictionary dictionaryWithContentsOfFile:[NSString stringWithFormat:@"%@/Info.plist", app_path]];
-    if(DEBUG == DEBUG_ON){
-        NSLog(@"Loaded .plist file at Documents Directory is: %@", [resultDictionary description]);
-    }
-    
+//    if(DEBUG == DEBUG_ON){
+//        NSLog(@"Loaded .plist file at Documents Directory is: %@", [resultDictionary description]);
+//    }
     NSString *app_binary = @"";
-    
-    NSMutableArray *deb_paths = [NSMutableArray array];
-    NSMutableArray *deb_indexs = [NSMutableArray array];
-    for(int i=0;i<dylib_paths.count;i++){
-        NSString *path = [dylib_paths[i] lowercaseString];
-        if ([path hasSuffix:@".deb"]) {
-            [deb_paths addObject:path];
-            [deb_indexs addObject:[NSNumber numberWithInt:i]];
-        }
-    }
-        
+            
     if (resultDictionary) {
         app_binary = [resultDictionary objectForKey:NameKey];
     } else {
@@ -169,6 +157,7 @@ int patch_ipa(NSString *app_path, NSMutableArray *dylib_paths) {
         command.arguments = @[@"-change", @"/usr/lib/libsubstrate.dylib", @"@executable_path/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", @([[NSString stringWithFormat:@"%@/%@", DylibFolder, dylibName] UTF8String])];
         [command launch];
         [command waitUntilExit];
+        
         command = [[NSTask alloc] init];
         command.launchPath = INSTALL_NAME_TOOL_PATH;
         command.arguments = @[@"-change", @"/Library/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", @"@executable_path/Frameworks/CydiaSubstrate.framework/CydiaSubstrate", @([[NSString stringWithFormat:@"%@/%@", DylibFolder, dylibName] UTF8String])];
@@ -209,10 +198,10 @@ char* deb_test(NSString *temp_path, NSString* deb_path) {
     }
     
     // Create task
-    /*
+    
     STPrivilegedTask *privilegedTask = [STPrivilegedTask new];
     [privilegedTask setLaunchPath:DPKG_PATH];
-    [privilegedTask setArguments:@[@"-x", @([[[NSString stringWithFormat:@"%@", debPath] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])]];
+    [privilegedTask setArguments:@[@"-x", @([[[NSString stringWithFormat:@"%@", deb_path] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])]];
 
     // Launch it, user is prompted for password
     OSStatus err = [privilegedTask launch];
@@ -224,22 +213,23 @@ char* deb_test(NSString *temp_path, NSString* deb_path) {
         if(DEBUG == DEBUG_ON){
             NSLog(@"User cancelled");
         }
-        return IPAPATCHER_FAILURE;
+        return result;
     } else {
         if(DEBUG == DEBUG_ON){
             NSLog(@"Something went wrong");
         }
-        return IPAPATCHER_FAILURE;
+        return result;
     }
     [privilegedTask waitUntilExit];
-    */
-    
+   
+    /*
     NSTask *command = [[NSTask alloc] init];
     command.launchPath = DPKG_PATH;
     command.arguments = @[@"-x", @([[[NSString stringWithFormat:@"%@", deb_path] stringByReplacingOccurrencesOfString:@"\n" withString:@""] UTF8String]), @([deb_insatll_temp UTF8String])];
     NSLog(@"%@", command.arguments);
     [command launch];
     [command waitUntilExit];
+    */
     
     NSString *debcheck = [NSString stringWithFormat:@"%@/deb/Library/MobileSubstrate/DynamicLibraries", temp_path];
     if(!folderExists(debcheck)){
@@ -265,7 +255,7 @@ char* deb_test(NSString *temp_path, NSString* deb_path) {
     }
     
     NSString *dylib_paths = @"";
-    for(int i = 0; i < debFiles.count; i++){
+    for(int i = 0; i < debFiles.count; i++) {
         NSString *dylib_path = debFiles[i];
         if (dylib_paths.length == 0) {
             dylib_paths = dylib_path;
@@ -274,6 +264,6 @@ char* deb_test(NSString *temp_path, NSString* deb_path) {
         }
     }
     NSLog(@"new_dylib_path:%@",dylib_paths);
-    result = [dylib_paths UTF8String];
+    result = (char *)[dylib_paths UTF8String];
     return result;
 }

@@ -1,8 +1,8 @@
 //
 //  patcher.h
-//  iPAPatcher
+//  IPASigner
 //
-//  Created by Brandon Plank on 10/27/20.
+//  Created by SWING on 2022/5/19.
 //
 
 #ifndef patcher_h

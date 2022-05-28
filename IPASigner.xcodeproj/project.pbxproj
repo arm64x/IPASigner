@@ -29,7 +29,6 @@
 		165C9F032835EECC00AC6D35 /* common.mm in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EF22835EECC00AC6D35 /* common.mm */; };
 		165C9F042835EECC00AC6D35 /* base64.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EF42835EECC00AC6D35 /* base64.cpp */; };
 		165C9F052835EECC00AC6D35 /* json.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EF82835EECC00AC6D35 /* json.cpp */; };
-		165C9F072835EECC00AC6D35 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 165C9EFA2835EECC00AC6D35 /* .gitignore */; };
 		165C9F082835EECC00AC6D35 /* bundle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EFC2835EECC00AC6D35 /* bundle.cpp */; };
 		165C9F092835EECC00AC6D35 /* macho.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EFE2835EECC00AC6D35 /* macho.cpp */; };
 		165C9F0A2835EECC00AC6D35 /* zsign.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 165C9EFF2835EECC00AC6D35 /* zsign.cpp */; };
@@ -202,7 +201,6 @@
 		165C9EF62835EECC00AC6D35 /* json.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = json.h; sourceTree = "<group>"; };
 		165C9EF72835EECC00AC6D35 /* mach-o.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "mach-o.h"; sourceTree = "<group>"; };
 		165C9EF82835EECC00AC6D35 /* json.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = json.cpp; sourceTree = "<group>"; };
-		165C9EFA2835EECC00AC6D35 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		165C9EFB2835EECC00AC6D35 /* macho.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = macho.h; sourceTree = "<group>"; };
 		165C9EFC2835EECC00AC6D35 /* bundle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = bundle.cpp; sourceTree = "<group>"; };
 		165C9EFD2835EECC00AC6D35 /* signing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = signing.h; sourceTree = "<group>"; };
@@ -490,7 +488,6 @@
 		165C9EEB2835EECC00AC6D35 /* zsign */ = {
 			isa = PBXGroup;
 			children = (
-				165C9EFA2835EECC00AC6D35 /* .gitignore */,
 				165C9F012835EECC00AC6D35 /* archo.cpp */,
 				165C9EEC2835EECC00AC6D35 /* archo.h */,
 				165C9EFC2835EECC00AC6D35 /* bundle.cpp */,
@@ -621,7 +618,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				165C9F072835EECC00AC6D35 /* .gitignore in Resources */,
 				165C9E452834AF6F00AC6D35 /* Preview Assets.xcassets in Resources */,
 				165C9E422834AF6F00AC6D35 /* Assets.xcassets in Resources */,
 				16BD9CB0283E2F27003711EC /* Cydia.bundle in Resources */,

@@ -211,11 +211,8 @@ ALTDeviceType ALTDeviceTypeFromUIDeviceFamily(NSInteger deviceFamily)
 }
 
 - (BOOL)encrypted {
-    
     bool encrypted = true;
-    
     char *macho_path = (char *)[[NSString stringWithFormat:@"%@/%@",self.fileURL.path, [[self.fileURL URLByDeletingPathExtension] lastPathComponent]] UTF8String];
-    
     ZMachO macho;
     if (macho.Init(macho_path)) {
         for (size_t i = 0; i < macho.m_arrArchOes.size(); i++) {
@@ -227,6 +224,5 @@ ALTDeviceType ALTDeviceTypeFromUIDeviceFamily(NSInteger deviceFamily)
     }
     return encrypted;
 }
-
 
 @end

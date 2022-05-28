@@ -8,6 +8,7 @@
 
 #import "ALTApplication.h"
 #import "ALTProvisioningProfile.h"
+#include "macho.h"
 
 ALTDeviceType ALTDeviceTypeFromUIDeviceFamily(NSInteger deviceFamily)
 {
@@ -208,5 +209,24 @@ ALTDeviceType ALTDeviceTypeFromUIDeviceFamily(NSInteger deviceFamily)
     
     return appExtensions;
 }
+
+- (BOOL)encrypted {
+    
+    bool encrypted = true;
+    
+    char *macho_path = (char *)[[NSString stringWithFormat:@"%@/%@",self.fileURL.path, [[self.fileURL URLByDeletingPathExtension] lastPathComponent]] UTF8String];
+    
+    ZMachO macho;
+    if (macho.Init(macho_path)) {
+        for (size_t i = 0; i < macho.m_arrArchOes.size(); i++) {
+            ZArchO *archo = macho.m_arrArchOes[i];
+            encrypted = archo->m_bEncrypted;
+            printf("encrypted: %d\n", encrypted);
+        }
+        macho.Free();
+    }
+    return encrypted;
+}
+
 
 @end

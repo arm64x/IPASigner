@@ -451,16 +451,17 @@ extension ContentView {
     
     func importAppBundle(_ fileURL: URL) {
         if let application = ALTApplication.init(fileURL: fileURL) {
+            let encrypted = application.encrypted()
             self.signingOptions.app = application
             self.signingOptions.appVersion = application.version
             self.signingOptions.appDisplayName = application.name
             self.signingOptions.appBundleId = application.bundleIdentifier
             self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
             fileManager.setFilePosixPermissions(application.fileURL)
-            var name = application.fileURL.lastPathComponent
-            name = name.replacingOccurrences(of: ".app", with: "")
-            let xx = application.fileURL.appendingPathComponent(name)
-            AppSigner().printMachOInfo(withFileURL: xx)
+//            var name = application.fileURL.lastPathComponent
+//            name = name.replacingOccurrences(of: ".app", with: "")
+//            let xx = application.fileURL.appendingPathComponent(name)
+//            AppSigner().printMachOInfo(withFileURL: xx)
         } else {
             setStatus("Invalid File")
         }

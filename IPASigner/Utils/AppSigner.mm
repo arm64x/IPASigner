@@ -263,7 +263,15 @@ std::string CertificatesContent(ALTCertificate *altCertificate)
             completionHandler(NO, nil, resignedIPAURL);
         }
     });
-} 
+}
+
+- (int)printMachOInfoWithFileURL:(NSURL *)fileURL {
+    char *path = (char *)[fileURL.path UTF8String];
+    NSLog(@"ipa:%s",path);
+    char *argv[] = {"-i", path};
+    int res = zsign(2, argv);
+    return res;
+}
 
 @end
 

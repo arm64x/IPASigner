@@ -21,6 +21,8 @@ NS_ASSUME_NONNULL_BEGIN
                    logHandler:(void (^)(NSString *log))logHandler
             completionHandler:(void (^)(BOOL success, NSError *_Nullable error, NSURL *_Nullable url))completionHandler;
 
+- (int)printMachOInfoWithFileURL:(NSURL *)fileURL;
+
 @end
 
 NS_ASSUME_NONNULL_END

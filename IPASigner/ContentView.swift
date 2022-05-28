@@ -457,6 +457,10 @@ extension ContentView {
             self.signingOptions.appBundleId = application.bundleIdentifier
             self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
             fileManager.setFilePosixPermissions(application.fileURL)
+            var name = application.fileURL.lastPathComponent
+            name = name.replacingOccurrences(of: ".app", with: "")
+            let xx = application.fileURL.appendingPathComponent(name)
+            AppSigner().printMachOInfo(withFileURL: xx)
         } else {
             setStatus("Invalid File")
         }

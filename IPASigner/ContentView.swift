@@ -451,24 +451,34 @@ extension ContentView {
     
     func importAppBundle(_ fileURL: URL) {
         if let application = ALTApplication.init(fileURL: fileURL) {
-            let encrypted = application.encrypted()
-            self.signingOptions.app = application
-            self.signingOptions.appVersion = application.version
-            self.signingOptions.appDisplayName = application.name
-            self.signingOptions.appBundleId = application.bundleIdentifier
-            self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
-            fileManager.setFilePosixPermissions(application.fileURL)
-//            var name = application.fileURL.lastPathComponent
-//            name = name.replacingOccurrences(of: ".app", with: "")
-//            let xx = application.fileURL.appendingPathComponent(name)
-//            AppSigner().printMachOInfo(withFileURL: xx)
+            if application.encrypted() {
+                
+            } else {
+                self.signingOptions.app = application
+                self.signingOptions.appVersion = application.version
+                self.signingOptions.appDisplayName = application.name
+                self.signingOptions.appBundleId = application.bundleIdentifier
+                self.signingOptions.appMinimumiOSVersion = application.minimumiOSVersion.stringValue
+                fileManager.setFilePosixPermissions(application.fileURL)
+            }
         } else {
             setStatus("Invalid File")
         }
     }
     
     func startSigning() {
-        if let app = self.signingOptions.app, let cert = self.signingOptions.signingCert, let profile = self.signingOptions.signingProfile {
+        if let app = self.signingOptions.app,
+           let cert = self.signingOptions.signingCert,
+           let profile = self.signingOptions.signingProfile {
+            if app.encrypted() {
+                self.alertMessage = "IPA未脱壳！"
+                self.showingAlert = true
+                if let tempFolder = self.lastMakedTempFolder {
+                    cleanup(tempFolder)
+                    self.lastMakedTempFolder = nil
+                }
+                return
+            }
             let infoPlistURL = app.fileURL.appendingPathComponent("Info.plist")
             if let dictionary = NSMutableDictionary.init(contentsOf: infoPlistURL) {
                 print("Info.plist: \(dictionary)")
@@ -647,22 +657,22 @@ extension ContentView {
     }
     
     func cleanup(_ tempFolder: String){
-//        do {
-//            Log.write("Deleting: \(tempFolder)")
-//            try fileManager.removeItem(atPath: tempFolder)
-//        } catch let error as NSError {
-//            setStatus("Unable to delete temp folder")
-//            Log.write(error.localizedDescription)
-//        }
-//        
-//        self.signingOptions.ipaPath = ""
-//        self.signingOptions.dylibs = ""
-//        self.signingOptions.dylibPaths = []
-//        self.signingOptions.app = nil
-//        self.signingOptions.appDisplayName = ""
-//        self.signingOptions.appBundleId = ""
-//        self.signingOptions.appVersion = ""
-//        self.signingOptions.appMinimumiOSVersion = ""
+        do {
+            Log.write("Deleting: \(tempFolder)")
+            try fileManager.removeItem(atPath: tempFolder)
+        } catch let error as NSError {
+            setStatus("Unable to delete temp folder")
+            Log.write(error.localizedDescription)
+        }
+        
+        self.signingOptions.ipaPath = ""
+        self.signingOptions.dylibs = ""
+        self.signingOptions.dylibPaths = []
+        self.signingOptions.app = nil
+        self.signingOptions.appDisplayName = ""
+        self.signingOptions.appBundleId = ""
+        self.signingOptions.appVersion = ""
+        self.signingOptions.appMinimumiOSVersion = ""
     }
     
     func setStatus(_ status: String){

@@ -33,3 +33,5 @@
 
 
 #import "patcher.h"
+
+#import "ClassDumpUtils.h"

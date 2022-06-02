@@ -43,11 +43,6 @@
 		166DCB53283E0E12000C2D66 /* headers.m in Sources */ = {isa = PBXBuildFile; fileRef = 166DCB50283E0E12000C2D66 /* headers.m */; };
 		16932F0B283797890030C319 /* SigningOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16932F0A283797890030C319 /* SigningOptions.swift */; };
 		16BD9CB0283E2F27003711EC /* Cydia.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 16BD9CAF283E2F27003711EC /* Cydia.bundle */; };
-		16BD9CBC284079CB003711EC /* Inject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD9CB6284079CB003711EC /* Inject.swift */; };
-		16BD9CBD284079CB003711EC /* Command.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD9CB7284079CB003711EC /* Command.swift */; };
-		16BD9CBE284079CB003711EC /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD9CB8284079CB003711EC /* Extension.swift */; };
-		16BD9CBF284079CB003711EC /* Shell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD9CB9284079CB003711EC /* Shell.swift */; };
-		16BD9CC0284079CB003711EC /* BitType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD9CBA284079CB003711EC /* BitType.swift */; };
 		88A68B8FEE043C9A70D56B03 /* Pods_IPASigner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */; };
 /* End PBXBuildFile section */
 
@@ -225,11 +220,6 @@
 		16932F0A283797890030C319 /* SigningOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SigningOptions.swift; sourceTree = "<group>"; };
 		16BD9CAE283E2DB3003711EC /* IPASigner.entitlements */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.entitlements; path = IPASigner.entitlements; sourceTree = "<group>"; };
 		16BD9CAF283E2F27003711EC /* Cydia.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Cydia.bundle; sourceTree = "<group>"; };
-		16BD9CB6284079CB003711EC /* Inject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Inject.swift; sourceTree = "<group>"; };
-		16BD9CB7284079CB003711EC /* Command.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Command.swift; sourceTree = "<group>"; };
-		16BD9CB8284079CB003711EC /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
-		16BD9CB9284079CB003711EC /* Shell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Shell.swift; sourceTree = "<group>"; };
-		16BD9CBA284079CB003711EC /* BitType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BitType.swift; sourceTree = "<group>"; };
 		3815835F2C723BA87BC4E1B1 /* Pods-IPASigner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPASigner.release.xcconfig"; path = "Target Support Files/Pods-IPASigner/Pods-IPASigner.release.xcconfig"; sourceTree = "<group>"; };
 		41C25605FF0D0502FD8121BA /* Pods_IPASigner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IPASigner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C6A29CA8A9C92E885A8F4FE4 /* Pods-IPASigner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IPASigner.debug.xcconfig"; path = "Target Support Files/Pods-IPASigner/Pods-IPASigner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -475,7 +465,6 @@
 				165C9F102836047400AC6D35 /* AppSigner.mm */,
 				166DCB47283E0E07000C2D66 /* patcher.h */,
 				166DCB46283E0E07000C2D66 /* patcher.m */,
-				16BD9CB5284079CB003711EC /* inject */,
 				166DCB49283E0E12000C2D66 /* optool */,
 				165C9EEB2835EECC00AC6D35 /* zsign */,
 				165C9E792835E0B600AC6D35 /* openssl */,
@@ -531,18 +520,6 @@
 				166DCB4F283E0E12000C2D66 /* operations.m */,
 			);
 			path = optool;
-			sourceTree = "<group>";
-		};
-		16BD9CB5284079CB003711EC /* inject */ = {
-			isa = PBXGroup;
-			children = (
-				16BD9CBA284079CB003711EC /* BitType.swift */,
-				16BD9CB7284079CB003711EC /* Command.swift */,
-				16BD9CB8284079CB003711EC /* Extension.swift */,
-				16BD9CB6284079CB003711EC /* Inject.swift */,
-				16BD9CB9284079CB003711EC /* Shell.swift */,
-			);
-			path = inject;
 			sourceTree = "<group>";
 		};
 		4D1B93DAA3F7984DBC10BD1D /* Pods */ = {
@@ -691,7 +668,6 @@
 				165C9F022835EECC00AC6D35 /* openssl.cpp in Sources */,
 				165C9E4F2835D8D800AC6D35 /* Log.swift in Sources */,
 				165C9E4D2835D31300AC6D35 /* NSTask-execute.swift in Sources */,
-				16BD9CBD284079CB003711EC /* Command.swift in Sources */,
 				165C9F0F2835F05400AC6D35 /* ZLogManager.m in Sources */,
 				165C9E662835E02D00AC6D35 /* ALTCertificate.m in Sources */,
 				165C9F092835EECC00AC6D35 /* macho.cpp in Sources */,
@@ -700,16 +676,12 @@
 				165C9E632835E02D00AC6D35 /* ALTCapabilities.m in Sources */,
 				165C9F16283644AA00AC6D35 /* AppDefaults.swift in Sources */,
 				165C9E672835E02D00AC6D35 /* ALTProvisioningProfile.m in Sources */,
-				16BD9CBE284079CB003711EC /* Extension.swift in Sources */,
 				165C9E762835E09C00AC6D35 /* zip.c in Sources */,
 				165C9F0A2835EECC00AC6D35 /* zsign.cpp in Sources */,
-				16BD9CBC284079CB003711EC /* Inject.swift in Sources */,
 				165C9E682835E02D00AC6D35 /* NSFileManager+Zip.m in Sources */,
 				165C9F042835EECC00AC6D35 /* base64.cpp in Sources */,
-				16BD9CC0284079CB003711EC /* BitType.swift in Sources */,
 				165C9E652835E02D00AC6D35 /* ALTDevice.m in Sources */,
 				166DCB48283E0E07000C2D66 /* patcher.m in Sources */,
-				16BD9CBF284079CB003711EC /* Shell.swift in Sources */,
 				166DCB51283E0E12000C2D66 /* NSData+Reading.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
